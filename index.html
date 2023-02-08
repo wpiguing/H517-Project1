@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Hugo 0.84.0">
+  <title>London's 1854 Cholera Epidemic</title>
+
+  <link rel="canonical" href="/index.html">
+
+
+
+  <!-- Bootstrap core CSS -->
+  <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+  </style>
+
+
+  <!-- Custom styles for this template -->
+  <link href="../assets/dist/css/dashboard.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Project 1</a>
+    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+      data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="navbar-nav">
+      <div class="nav-item me-0 px-3">
+        <p class="text-light mb-0">H517 Visualization Design, Analysis,
+          & Evaluation</p>
+
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <div class="position-sticky pt-3 px-3">
+          <ul class="nav flex-column border-bottom pb-3">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/index.html">
+                <span data-feather="home"></span>
+                Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about.html">
+                <span data-feather="info"></span>
+                About
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" href="#">
+                <span data-feather="youtube"></span>
+                Video Explanation
+              </a>
+            </li>
+            
+          </ul>
+
+          <h3 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-bold">
+            <span>Filters</span>
+          </h3>
+          <h4 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Gender</span>
+          </h4>
+          <ul class="nav flex-column mb-2">
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="" id="male">
+              <label class="form-check-label mx-2" for="male">
+                Male
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="" id="female">
+              <label class="form-check-label mx-2" for="female">
+                Female
+              </label>
+            </div>
+          </ul>
+          <h4 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Age</span>
+          </h4>
+          <ul class="nav flex-column mb-2">
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="" id="age1">
+              <label class="form-check-label mx-2" for="age1">
+                0-10
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="" id="age2">
+              <label class="form-check-label mx-2" for="age2">
+                11-20
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="" id="age3">
+              <label class="form-check-label mx-2" for="age3">
+                21-40
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="" id="age4">
+              <label class="form-check-label mx-2" for="age4">
+                41-60
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="" id="age5">
+              <label class="form-check-label mx-2" for="age5">
+                61-80
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="" id="age6">
+              <label class="form-check-label mx-2" for="age6">
+                > 80
+              </label>
+            </div>
+          </ul>
+          <h4 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Map Legends</span>
+          </h4>
+          <ul class="nav flex-column mb-2">
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="" id="age1">
+              <label class="form-check-label mx-2" for="age1">
+                Street Names
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="" id="age1">
+              <label class="form-check-label mx-2" for="age1">
+                Pumps
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="" id="age1">
+              <label class="form-check-label mx-2" for="age1">
+                Buildings
+              </label>
+            </div>
+          </ul>
+        </div>
+      </nav>
+
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <div
+          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h1 class="h2">London's 1854 Cholera Epidemic</h1>
+          
+        </div>
+
+        <div class="my-4 w-100 border" id="canvas" width="900" height="380"></div>
+
+        <h2>Section title</h2>
+      </main>
+    </div>
+  </div>
+
+  <!-- <script src="../assets/dist/js/bootstrap.bundle.min.js"></script> -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+    integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous">
+  </script> -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
+    integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script> -->
+  <!-- <script src="../assets/dist/js/dashboard.js"></script> -->
+  <script src="../assets/dist/js/script.js"></script>
+</body>
+
+</html>
