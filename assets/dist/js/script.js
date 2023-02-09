@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .attr("height", h);
     
     //Streets Map 
-    d3.json("/data/streets.json").then(function (data) {
+    d3.json("./data/streets.json").then(function (data) {
         var g = d3.select("#map-svg")
             .append("g")
             .attr("id", "streets");
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Death Coordinates
-    d3.csv("/data/deaths_age_sex.csv").then(function (data) {
+    d3.csv("./data/deaths_age_sex.csv").then(function (data) {
         var g = d3.select("#map-svg")
             .append("g")
             .attr("id", "cirles");
