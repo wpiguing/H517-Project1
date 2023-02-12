@@ -76,7 +76,7 @@
                 Video Explanation
               </a>
             </li>
-            
+
           </ul>
 
           <h3 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-bold">
@@ -166,30 +166,37 @@
         </div>
       </nav>
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <div
-          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h2">London's 1854 Cholera Epidemic</h1>
-          
+        <div class="mx-auto my-6 ">
+          <div class="row">
+            <h1 class="h2 p-3 ">London's 1854 Cholera Epidemic</h1>
+            <div class="col-8">
+              <div class=" border" id="canvas" width="1000" height="500"></div>
+            </div>
+            <div class="col">
+              <div class="py-4 text-center" id="pie-chart" ></div>
+              <div class="py-4 text-center" id="age-pie-chart" ></div>
+            </div>
+          </div>
         </div>
-
-        <div class="my-4 w-100 border" id="canvas" width="900" height="400"></div>
-        <div
-          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h2">London's 1854 Cholera Epidemic</h1>
+        <div class="mx-auto my-6 ">
+          <div class="row">
+            <h1 class="h2 p-3 ">Deaths Per Day - August 19 to September 29</h1>
+            <div class="col">
+              <div class="my-4 " id="day-bar-graph"></div>
+            </div>
+          </div>
         </div>
-        <div class="my-4 w-100 border" id="pie-chart" width="900" height="400"></div>
-        <div class="my-4 w-100 border" id="age-pie-chart" width="900" height="400"></div>
       </main>
     </div>
   </div>
 
-  <!-- <script src="/assets/dist/js/bootstrap.bundle.min.js"></script> -->
+  <script src="./assets/dist/js/bootstrap.bundle.min.js"></script>
   <!-- <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
     integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous">
   </script> -->
   <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
     integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script> -->
-  <!-- <script src="/assets/dist/js/dashboard.js"></script> -->
+  <script src="./assets/dist/js/dashboard.js"></script>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="./assets/dist/js/script.js"></script>
 </body>
