@@ -1,26 +1,21 @@
 document.addEventListener('DOMContentLoaded', function () {
-    var w = 500;
+    var w = 750;
     var h = 500;
     const multiplier = 25;
     const radius = 2;
 
+    // Parent SVG for all map elements
     let svg = d3.select("#canvas")
         .append("svg")
         .attr("id", "map-svg")
         .attr("width", w)
         .attr("height", h);
 
-    // var zoom = d3.zoom()
-    //     .scaleExtent([1, 8])
-    //     .on("zoom", zoomed);
+    //Child g element is to handle zoom. Shit gets all jittery without this.
+    let mapContainer = d3.select("svg#map-svg")
+        .append("g")
+        .attr("id", "map-container")
 
-    // svg.call(zoom);
-
-    // function zoomed() {
-    //     g.attr("transform", d3.event.transform);
-    // }
-
-    //Streets Map 
 
     LoadAllData();
 
@@ -88,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function RenderStreets(data) {
+        var padding = 50;
         var streets = [];
         var street = [];
         street = data.map(function (d) {
@@ -99,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
             streets.push(street);
         });
 
-        var g = d3.select("#map-svg")
+        var g = d3.select("#map-container")
             .append("g")
             .attr("id", "streets");
 
@@ -110,7 +106,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         g.append("path")
             .data([streets])
-            .enter().append("path")
+            .enter()
+            .append("path")
             .attr("class", "line")
             .attr("d", lines);
 
@@ -118,21 +115,21 @@ document.addEventListener('DOMContentLoaded', function () {
         lines.style("stroke", "black")
             .style("stroke-width", 1)
             .attr("x1", function (d) {
-                return d[0] * multiplier
+                return d[0] * multiplier 
             })
             .attr("y1", function (d) {
-                return d[1] * multiplier
+                return d[1] * multiplier 
             })
             .attr("x2", function (d) {
-                return d[2] * multiplier
+                return d[2] * multiplier 
             })
             .attr("y2", function (d) {
-                return d[3] * multiplier
+                return d[3] * multiplier 
             });
     }
 
     function RenderPumps(data) {
-        var g = d3.select("#map-svg")
+        var g = d3.select("#map-container")
             .append("g")
             .attr("id", "pumps");
         var pumps = g.selectAll("circle")
@@ -141,10 +138,10 @@ document.addEventListener('DOMContentLoaded', function () {
             .append("circle");
 
         pumps.attr("cx", function (d) {
-                return d.x * 25;
+                return d.x * multiplier;
             })
             .attr("cy", function (d) {
-                return d.y * 25;
+                return d.y * multiplier;
             })
             .attr("r", function (d) {
                 return radius * 2;
@@ -153,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function RenderDeathCircles(data) {
-        var g = d3.select("#map-svg")
+        var g = d3.select("#map-container")
             .append("g")
             .attr("id", "cirles");
         var circles = g.selectAll("circle")
@@ -162,10 +159,10 @@ document.addEventListener('DOMContentLoaded', function () {
             .append("circle")
 
         circles.attr("cx", function (d) {
-                return d.x * 25;
+                return d.x * multiplier;
             })
             .attr("cy", function (d) {
-                return d.y * 25;
+                return d.y * multiplier;
             })
             .attr("r", function (d) {
                 return radius;
@@ -176,6 +173,9 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("data-gender", function (d) {
                 return d.gender;
             })
+            // .attr("data-death", function (d, i) {
+            //     return (i);
+            // })
             .attr("fill", function (d) {
                 if (d.gender == 1) {
                     return "pink";
@@ -300,8 +300,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function RenderDeathBarGraph(data) {
 
-    w = 1200;
-    h = 350;
+    w = 700;
+    h = 425;
     var padding = 50; 
 
     // Parse Date format
@@ -390,23 +390,59 @@ document.addEventListener('DOMContentLoaded', function () {
         .ticks(20);
 
     // x axis
-    barSvg.append("g")
-        .attr("class", "x-Axis")
+    var xAxisGroup = barSvg.append("g")
+        .attr("id", "x-axis")
         .attr("transform", "translate(" + padding  + "," +  h + ")")
         .call(xAxis)
-        .selectAll("text")
+       
+    xAxisGroup.selectAll("text")
         .text( function(d){
             return dateFormat(d)
         })
         .style("text-anchor", "end")
-        .attr("dx", "-1em")
-        .attr("dy", "-.8em")
-        .attr("transform", "rotate(-90)");
-
+        .attr("dx", "-.75em")
+        .attr("dy", "-.65em")
+        .attr("transform", "rotate(-90)")
+    
+    xAxisGroup.append("text")
+        .attr("id", "x-axis-label")
+        .attr("y", 50)
+        .attr("x", w/2)
+        .attr("text-anchor", "end")
+        .attr("fill", "black")
+        .text("Dates")
+        .attr("font-size", "12px")
+    
     //y axis
     barSvg.append("g")
-        .attr("class", "y-Axis")
+        .attr("id", "y-Axis")
         .call(yAxis)
         .attr("transform", "translate(" + padding + ", 0)")
+        .append("text")
+        .attr("font-size", "12px")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 20)
+        .attr("x", h/-2)
+        .attr("dy", "-5em")
+        .attr("text-anchor", "end")
+        .attr("fill", "black")
+        .text("Deaths ");
+            
+    
     }
+    
+
+    // Handle Zoom Event 
+    var zoom = d3.zoom()
+    .scaleExtent([1,3])
+    //.translateExtent([[0,0], [w * 2, h * 2]])
+    .on("zoom", handleZoom);
+
+    function handleZoom(e) {
+        d3.select("#map-container")
+        .attr("transform", e.transform);
+    }
+    d3.select("#map-svg")
+    .call(zoom);
+
 });

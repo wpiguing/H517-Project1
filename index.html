@@ -40,17 +40,13 @@
 <body>
 
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Project 1</a>
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">London's 1854 Cholera Epidemic</a>
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
       data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="navbar-nav">
-      <div class="nav-item me-0 px-3">
-        <p class="text-light mb-0">H517 Visualization Design, Analysis,
-          & Evaluation
-        </p>
-      </div>
+
     </div>
   </header>
   <div class="container-fluid">
@@ -168,22 +164,30 @@
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
         <div class="mx-auto my-6 ">
           <div class="row">
-            <h1 class="h2 p-3 ">London's 1854 Cholera Epidemic</h1>
-            <div class="col-8">
-              <div class=" border" id="canvas" width="1000" height="500"></div>
+            <h1 class="h2 p-3 ">Map</h1>
+            <div class="col">
+              <div class=" border text-center shadow-sm" id="canvas" width="500" height="500"></div>
             </div>
             <div class="col">
-              <div class="py-4 text-center" id="pie-chart" ></div>
-              <div class="py-4 text-center" id="age-pie-chart" ></div>
+              <div class="my-4" id="day-bar-graph"></div>
             </div>
           </div>
         </div>
         <div class="mx-auto my-6 ">
           <div class="row">
-            <h1 class="h2 p-3 ">Deaths Per Day - August 19 to September 29</h1>
-            <div class="col">
-              <div class="my-4 " id="day-bar-graph"></div>
+            <div class="col text-center">
+              <div class="pt-4" id="pie-chart" ></div>
+              <h2 class="h4 pt-1 ">Gender Breakdown</h2>
+              <!-- <div class="my-4 " id="day-bar-graph"></div> -->
             </div>
+            <div class="col  text-center">
+              <div class="pt-4" id="age-pie-chart" ></div>
+              <h2 class="h4 pt-1 ">Age Breakdown</h2>
+            </div>
+            <div class="col-6">
+              Slider goes here
+            </div>
+            
           </div>
         </div>
       </main>
