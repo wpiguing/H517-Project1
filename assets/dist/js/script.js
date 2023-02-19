@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function LoadAllData() {
         d3.json("./data/streets.json").then(function (data) {
-            //RenderStreets(data);
             RenderPathStreets(data);
         });
         d3.csv("./data/deathdays.csv").then(function (data) {
@@ -123,51 +122,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-    /*function RenderStreets(data) {
-        var padding = 50;
-        var streets = [];
-        var street = [];
-        street = data.map(function (d) {
-            street = [];
-            street.push(d[0].x, d[0].y, d[1].x, d[1].y);
-            if (d[2] != null) {
-                street.push(d[2].x, d[2].y);
-            }
-            streets.push(street);
-        });
-
-        var g = d3.select("#map-container")
-            .append("g")
-            .attr("id", "streets");
-
-        var lines = g.selectAll("line")
-            .data(streets)
-            .enter()
-            .append("line");
-
-        g.append("path")
-            .data([streets])
-            .enter()
-            .append("path")
-            .attr("class", "line")
-            .attr("d", lines);
-
-
-        lines.style("stroke", "black")
-            .style("stroke-width", 1)
-            .attr("x1", function (d) {
-                return d[0] * multiplier 
-            })
-            .attr("y1", function (d) {
-                return d[1] * multiplier 
-            })
-            .attr("x2", function (d) {
-                return d[2] * multiplier 
-            })
-            .attr("y2", function (d) {
-                return d[3] * multiplier 
-            });
-    }*/
 
     function RenderPathStreets(data) {
         var padding = 50;
@@ -537,7 +491,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Handle Zoom Event 
         var zoom = d3.zoom()
             .scaleExtent([1, 10])
-            //.translateExtent([[0,0], [w * 2, h * 2]])
             .on("zoom", handleZoom);
 
         function handleZoom(e) {
