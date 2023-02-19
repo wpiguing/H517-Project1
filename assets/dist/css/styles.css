@@ -1,0 +1,9 @@
+rect.bar:hover {
+    fill: orange;
+}
+#cirles circle:hover {
+    fill: greenyellow;
+}
+#pumps circle:hover {
+    fill: greenyellow;
+}

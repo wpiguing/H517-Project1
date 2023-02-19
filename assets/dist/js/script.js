@@ -2,7 +2,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var w = 750;
     var h = 500;
     const multiplier = 25;
-    const radius = 2;
+    const radius = 1.5;
+
+    var deathData;
+    var sliderData;
+    var dayCounter = 1;
+
 
     // Parent SVG for all map elements
     let svg = d3.select("#canvas")
@@ -16,15 +21,27 @@ document.addEventListener('DOMContentLoaded', function () {
         .append("g")
         .attr("id", "map-container")
 
-
     LoadAllData();
+    SetupZoom();
+    SetupFilters();
+    
+
+
 
     function LoadAllData() {
         d3.json("./data/streets.json").then(function (data) {
-            RenderStreets(data);
+            //RenderStreets(data);
+            RenderPathStreets(data);
         });
         d3.csv("./data/deathdays.csv").then(function (data) {
-            RenderDeathBarGraph(data);
+            // Death data gets "massaged" later on
+            deathData = data.slice();
+            RenderDeathBarGraph(deathData);
+
+            // Create a separate unchanged array for slider
+            sliderData = data.slice();
+            SetupSlider(sliderData);
+            
         });
         d3.csv("./data/pumps.csv").then(function (data) {
             RenderPumps(data);
@@ -82,7 +99,31 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function RenderStreets(data) {
+    function SetupSlider(sliderData) {
+
+        // Parse Date format
+        var dateFormat  = d3.timeFormat("%b %d");
+        var parseDate  = d3.timeParse("%-d-%b");
+        const slider = document.getElementById('date-slider');
+        const sliderLabel = document.getElementById('slider-label');
+        var value = slider.value -1;
+        var date = sliderData[value].date;
+        sliderLabel.textContent = dateFormat(date);
+
+        slider.addEventListener('input', () => {
+            slider.setAttribute('value', slider.value);
+            var value = slider.value -1;
+            var date = sliderData[value].date;
+            sliderLabel.textContent = dateFormat(date);
+
+            const selectedCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            const selectedValues = Array.from(selectedCheckboxes).map((checkbox) => checkbox.value);
+            FilterCircles(selectedValues);
+        });
+
+    }
+
+    /*function RenderStreets(data) {
         var padding = 50;
         var streets = [];
         var street = [];
@@ -126,6 +167,39 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("y2", function (d) {
                 return d[3] * multiplier 
             });
+    }*/
+
+    function RenderPathStreets(data) {
+        var padding = 50;
+        var xScale = d3.scaleLinear()
+            .domain([0, w])
+            .range([0, w]);
+        var yScale = d3.scaleLinear()
+            .domain([0, h])
+            .range([0, h]);
+
+        var streetsG = d3.select("#map-container")
+            .append("g")
+            .attr("id", "streets")
+            .selectAll('line')
+            .data(data)
+
+        var lines = d3.line()
+            .x(function (d) {
+                return xScale(d.x) * multiplier;
+            })
+            .y(function (d) {
+                return yScale(d.y) * multiplier;
+            })
+
+        streetsG.enter()
+            .append('path')
+            .attr("d", lines)
+            .attr("class", "street")
+            .attr("stroke", "black")
+            .attr("stroke-width", .5)
+            .style("fill", "none");
+
     }
 
     function RenderPumps(data) {
@@ -137,7 +211,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .enter()
             .append("circle");
 
-        pumps.attr("cx", function (d) {
+        pumps.attr("class", "pump")
+            .attr("cx", function (d) {
                 return d.x * multiplier;
             })
             .attr("cy", function (d) {
@@ -146,7 +221,11 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("r", function (d) {
                 return radius * 2;
             })
-            .attr("fill", "red");
+            .attr("fill", "red")
+            .append("title")
+            .text(function (d) {
+                return "Pump";
+            })
     }
 
     function RenderDeathCircles(data) {
@@ -156,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var circles = g.selectAll("circle")
             .data(data)
             .enter()
-            .append("circle")
+            .append("circle");
 
         circles.attr("cx", function (d) {
                 return d.x * multiplier;
@@ -168,14 +247,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 return radius;
             })
             .attr("data-age", function (d) {
-                return d.age;
+                return GetRangeLabel(d.age);
             })
             .attr("data-gender", function (d) {
-                return d.gender;
+                return GetGender(d.gender);
             })
-            // .attr("data-death", function (d, i) {
-            //     return (i);
-            // })
+            .attr("data-death", function (d) {
+                return GetDeathDate(deathData);
+            })
             .attr("fill", function (d) {
                 if (d.gender == 1) {
                     return "pink";
@@ -185,11 +264,40 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .attr("class", function (d) {
                 if (d.gender == 1) {
-                    return "female";
+                    return "circle female";
                 } else {
-                    return "male";
+                    return "circle male";
                 }
-            });
+            })
+            .append("title")
+            .text(function (d) {
+                return "Age: " + GetRangeLabel(d.age) + ", Gender: " + GetGender(d.gender);
+            })
+
+    }
+
+    function GetDeathDate(deathData) {
+        let localDeathData = deathData;
+        var deathCount = parseInt(localDeathData[0].deaths);
+        var newCount;
+        while (deathCount == 0) {
+            localDeathData.shift();
+            deathCount = parseInt(localDeathData[0].deaths);
+            dayCounter++;
+        }
+        if (deathCount > 0) {
+            newCount = deathCount - 1;
+            localDeathData[0].deaths = newCount.toString();
+            return dayCounter;
+        }
+    }
+
+    function GetGender(d) {
+        if (d == 0) {
+            return "Male"
+        } else {
+            return "Female"
+        }
     }
 
     function RenderGenderPieChart(pieData) {
@@ -252,7 +360,7 @@ document.addEventListener('DOMContentLoaded', function () {
             pieRadius = Math.min(width, height) / 2,
             g = agePieSvg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-        var color = d3.scaleOrdinal(['#4daf4a', '#377eb8', '#ff7f00', '#984ea3', '#e41a1c', '#00B3D4']);
+        var color = d3.scaleOrdinal(['#003f5c', '#58508d', '#bc5090', '#984ea3', '#ff6361', '#ffa600']);
         var pie = d3.pie();
         var arc = d3.arc()
             .innerRadius(0)
@@ -274,23 +382,33 @@ document.addEventListener('DOMContentLoaded', function () {
                 return "translate(" + arc.centroid(d) + ")";
             })
             .text(function (d) {
-                return GetRangeLabel(agePieData, d.value);
+                return GetRangeLabel(d.value, agePieData);
             });
     }
 
-    function GetRangeLabel(genderPieData, value) {
-        var range = Object.keys(genderPieData).find(key => genderPieData[key] === value);
+    function GetRangeLabel(value, agePieData) {
+        if (agePieData != undefined) {
+            var range = Object.keys(agePieData).find(key => agePieData[key] === value);
+        } else {
+            range = value
+        }
         switch (range) {
+            case "0":
             case "zero":
                 return "0-10";
+            case "1":
             case "one":
                 return "11-20";
+            case "2":
             case "two":
                 return "21-40";
+            case "3":
             case "three":
                 return "41-60";
+            case "4":
             case "four":
                 return "61-80";
+            case "5":
             case "five":
                 return "> 80";
             default:
@@ -299,150 +417,168 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function RenderDeathBarGraph(data) {
+        w = 700;
+        h = 400;
+        var padding = 50;
 
-    w = 700;
-    h = 425;
-    var padding = 50; 
+        // Parse Date format
+        var dateFormat = d3.timeFormat("%b %d");
+        var parseDate = d3.timeParse("%-d-%b");
+        data.forEach(function (d) {
+            d.date = parseDate(d.date);
+        });
 
-    // Parse Date format
-    var dateFormat  = d3.timeFormat("%b %d");
-    var parseDate  = d3.timeParse("%-d-%b");
-    data.forEach(function(d) {
-    d.date = parseDate(d.date);
-    });
+        let barSvg = d3.select("#day-bar-graph")
+            .append("svg")
+            .attr("id", "bar-svg")
+            .attr("width", w + padding)
+            .attr("height", h + padding);
 
-    let barSvg = d3.select("#day-bar-graph")
-        .append("svg")
-        .attr("id", "bar-svg")
-        .attr("width", w + padding)
-        .attr("height", h + padding);
+        // Scales
+        var xScale = d3.scaleTime()
+            .domain(d3.extent(data, function (d) {
+                return d.date;
+            }))
+            .range([0, w]);
+        var yMax = d3.max(data, function (d) {
+            return +d.deaths;
+        });
+        var yScale = d3.scaleLinear()
+            .domain([0, yMax])
+            .range([0, h]);
 
-    // Scales
-     var xScale = d3.scaleTime()
-        .domain(d3.extent(data, function(d) { return d.date; }))
-        .range([0, w ]);
-     var yMax = d3.max(data, function(d){return +d.deaths;});
-     var yScale = d3.scaleLinear()
-        .domain([0, yMax])
-        .range([0 , h]);
+        // For the Y Axis and Bar Value labels. Domain was a pain in the ass to invert, so just give those two their own scale.  
+        var invertedYScale = d3.scaleLinear()
+            .domain([yMax, 0])
+            .range([0, h]);
 
-    // For the Y Axis and Bar Value labels. Domain was a pain in the ass to invert, so just give those two their own scale.  
-    var invertedYScale = d3.scaleLinear()
-        .domain([yMax, 0])
-        .range([0 , h]); 
-    
-    // Added a color scale for bars
-    var color = d3.scaleSequential(d3.interpolateReds)
-        .domain([0, d3.max(data, function(d) { return d.deaths; })]);
+        // Added a color scale for bars
+        var color = d3.scaleSequential(d3.interpolateReds)
+            .domain([0, d3.max(data, function (d) {
+                return d.deaths;
+            })]);
 
-    // Bars
-    barSvg.append("g")
-        .attr("class", "bars")
-        .selectAll("rect")
-        .data(data)
-        .enter()
-        .append("rect")
-        .attr("fill", function(d) { 
-            return color(d.deaths); 
-        })
-        .attr("x", function (d, i){
-            return i * (w / data.length) + padding;
-        })
-        .attr("width", w / data.length)
-        .attr("y", function (d){
-            return h - yScale(d.deaths);
-        })
-        .attr("height", function (d){
-            return yScale(d.deaths) ;
-        })
+        // Bars
+        barSvg.append("g")
+            .attr("id", "bars")
+            .selectAll("rect")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("class", "bar")
+            .attr("fill", function (d) {
+                return color(d.deaths);
+            })
+            .attr("x", function (d, i) {
+                return i * (w / data.length) + padding;
+            })
+            .attr("width", w / data.length)
+            .attr("y", function (d) {
+                return h - yScale(d.deaths);
+            })
+            .attr("height", function (d) {
+                return yScale(d.deaths);
+            })
+            .append("title")
+            .text(function (d) {
+                return dateFormat(d.date) + ": " + d.deaths + " deaths";
+            })
 
-    // Death Value Labels - only for values > 10
-    barSvg.append("g")
-        .attr("class", "bar-labels")
-        .selectAll("text")
-        .data(data)
-        .enter()
-        .append("text")
-        .attr("data-death-value", function(d){
-            return d.deaths;
-        })
-        .text(function(d) {
-            if (d.deaths> 20) { return d.deaths; }
-        } )
-        .attr("x", function(d, i) {
-                return i * (w / data.length) + padding + 13;
-        })
-        .attr("y", function(d) {
-            if (d.deaths> 10) {
-                return  invertedYScale(d.deaths) + padding;
-            }
-        })
-        .attr("text-anchor", "middle")
-        .attr("fill", "white");
-
-
-    // Axis
-    var xAxis = d3.axisBottom()
+        // Axis Scale and Ticks
+        var xAxis = d3.axisBottom()
             .scale(xScale)
             .ticks(data.length);
-    var yAxis = d3.axisLeft()
-        .scale(invertedYScale)
-        .ticks(20);
+        var yAxis = d3.axisLeft()
+            .scale(invertedYScale)
+            .ticks(20);
 
-    // x axis
-    var xAxisGroup = barSvg.append("g")
-        .attr("id", "x-axis")
-        .attr("transform", "translate(" + padding  + "," +  h + ")")
-        .call(xAxis)
-       
-    xAxisGroup.selectAll("text")
-        .text( function(d){
-            return dateFormat(d)
-        })
-        .style("text-anchor", "end")
-        .attr("dx", "-.75em")
-        .attr("dy", "-.65em")
-        .attr("transform", "rotate(-90)")
-    
-    xAxisGroup.append("text")
-        .attr("id", "x-axis-label")
-        .attr("y", 50)
-        .attr("x", w/2)
-        .attr("text-anchor", "end")
-        .attr("fill", "black")
-        .text("Dates")
-        .attr("font-size", "12px")
-    
-    //y axis
-    barSvg.append("g")
-        .attr("id", "y-Axis")
-        .call(yAxis)
-        .attr("transform", "translate(" + padding + ", 0)")
-        .append("text")
-        .attr("font-size", "12px")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 20)
-        .attr("x", h/-2)
-        .attr("dy", "-5em")
-        .attr("text-anchor", "end")
-        .attr("fill", "black")
-        .text("Deaths ");
-            
-    
+        // x axis
+        var xAxisGroup = barSvg.append("g")
+            .attr("id", "x-axis")
+            .attr("transform", "translate(" + padding + "," + h + ")")
+            .call(xAxis)
+
+        xAxisGroup.selectAll("text")
+            .text(function (d) {
+                return dateFormat(d)
+            })
+            .style("text-anchor", "end")
+            .attr("dx", "-.75em")
+            .attr("dy", "-.65em")
+            .attr("transform", "rotate(-90)")
+
+        xAxisGroup.append("text")
+            .attr("id", "x-axis-label")
+            .attr("y", 50)
+            .attr("x", w / 2)
+            .attr("text-anchor", "end")
+            .attr("fill", "black")
+            .text("Dates")
+            .attr("font-size", "12px")
+
+        //y axis
+        barSvg.append("g")
+            .attr("id", "y-Axis")
+            .call(yAxis)
+            .attr("transform", "translate(" + padding + ", 0)")
+            .append("text")
+            .attr("font-size", "12px")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 20)
+            .attr("x", h / -2)
+            .attr("dy", "-4em")
+            .attr("text-anchor", "end")
+            .attr("fill", "black")
+            .text("Deaths");
     }
-    
 
-    // Handle Zoom Event 
-    var zoom = d3.zoom()
-    .scaleExtent([1,3])
-    //.translateExtent([[0,0], [w * 2, h * 2]])
-    .on("zoom", handleZoom);
+    //Zoom
+    function SetupZoom(params) {
+        // Handle Zoom Event 
+        var zoom = d3.zoom()
+            .scaleExtent([1, 10])
+            //.translateExtent([[0,0], [w * 2, h * 2]])
+            .on("zoom", handleZoom);
 
-    function handleZoom(e) {
-        d3.select("#map-container")
-        .attr("transform", e.transform);
+        function handleZoom(e) {
+            d3.select("#map-container")
+                .attr("transform", e.transform);
+        }
+        d3.select("#map-svg")
+            .call(zoom);
     }
-    d3.select("#map-svg")
-    .call(zoom);
+
+    //Filters
+    function SetupFilters() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+        checkboxes.forEach((checkbox) => {
+            checkbox.addEventListener('change', () => {
+                const selectedCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+                const selectedValues = Array.from(selectedCheckboxes).map((checkbox) => checkbox.value);
+                FilterCircles(selectedValues);
+            });
+        });
+    }
+
+
+    function FilterCircles(selectedValues) {
+        const circles = document.querySelectorAll('.circle');
+        const dateValue = document.getElementById('date-slider').value;
+
+        circles.forEach((circle) => {
+            const age = circle.getAttribute('data-age');
+            const gender = circle.getAttribute('data-gender');
+            const deathDate = parseInt(circle.getAttribute('data-death'));
+
+
+            if (selectedValues.includes(age) && selectedValues.includes(gender) && deathDate <= dateValue) {
+                circle.style.display = 'block';
+            } else {
+                circle.style.display = 'none';
+            }
+        });
+
+    }
 
 });

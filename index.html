@@ -31,14 +31,11 @@
       }
     }
   </style>
-
-
-  <!-- Custom styles for this template -->
+  <link href="./assets/dist/css/styles.css" rel="stylesheet">
   <link href="./assets/dist/css/dashboard.css" rel="stylesheet">
 </head>
 
 <body>
-
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
     <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">London's 1854 Cholera Epidemic</a>
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
@@ -72,9 +69,9 @@
                 Video Explanation
               </a>
             </li>
-
           </ul>
-
+          <input type="range" class="form-range pt-6" min="1" max="42" step="1" id="date-slider" value="42">  
+          <label for="range" class="form-label" id="slider-label">42</label>
           <h3 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-bold">
             <span>Filters</span>
           </h3>
@@ -83,55 +80,55 @@
           </h4>
           <ul class="nav flex-column mb-2">
             <div class="form-check nav-link">
-              <input class="form-check-input mx-0" type="checkbox" value="" id="male">
+              <input class="form-check-input mx-0" type="checkbox" value="Male" id="male" checked>
               <label class="form-check-label mx-2" for="male">
                 Male
               </label>
             </div>
             <div class="form-check nav-link">
-              <input class="form-check-input mx-0" type="checkbox" value="" id="female">
+              <input class="form-check-input mx-0" type="checkbox" value="Female" id="female" checked>
               <label class="form-check-label mx-2" for="female">
                 Female
               </label>
             </div>
           </ul>
           <h4 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-            <span>Age</span>
+            <span>Age Range</span>
           </h4>
           <ul class="nav flex-column mb-2">
             <div class="form-check nav-link">
-              <input class="form-check-input mx-0" type="checkbox" value="" id="age1">
-              <label class="form-check-label mx-2" for="age1">
+              <input class="form-check-input mx-0" type="checkbox" value="0-10" id="age0" checked>
+              <label class="form-check-label mx-2" for="age0">
                 0-10
               </label>
             </div>
             <div class="form-check nav-link">
-              <input class="form-check-input mx-0" type="checkbox" value="" id="age2">
-              <label class="form-check-label mx-2" for="age2">
+              <input class="form-check-input mx-0" type="checkbox" value="11-20" id="age1" checked>
+              <label class="form-check-label mx-2" for="age1">
                 11-20
               </label>
             </div>
             <div class="form-check nav-link">
-              <input class="form-check-input mx-0" type="checkbox" value="" id="age3">
-              <label class="form-check-label mx-2" for="age3">
+              <input class="form-check-input mx-0" type="checkbox" value="21-40" id="age2" checked>
+              <label class="form-check-label mx-2" for="age2">
                 21-40
               </label>
             </div>
             <div class="form-check nav-link">
-              <input class="form-check-input mx-0" type="checkbox" value="" id="age4">
-              <label class="form-check-label mx-2" for="age4">
+              <input class="form-check-input mx-0" type="checkbox" value="41-60" id="age3" checked>
+              <label class="form-check-label mx-2" for="age3">
                 41-60
               </label>
             </div>
             <div class="form-check nav-link">
-              <input class="form-check-input mx-0" type="checkbox" value="" id="age5">
-              <label class="form-check-label mx-2" for="age5">
+              <input class="form-check-input mx-0" type="checkbox" value="61-80" id="age4" checked>
+              <label class="form-check-label mx-2" for="age4">
                 61-80
               </label>
             </div>
             <div class="form-check nav-link">
-              <input class="form-check-input mx-0" type="checkbox" value="" id="age6">
-              <label class="form-check-label mx-2" for="age6">
+              <input class="form-check-input mx-0" type="checkbox" value="> 80" id="age5" checked>
+              <label class="form-check-label mx-2" for="age5">
                 > 80
               </label>
             </div>
@@ -141,20 +138,20 @@
           </h4>
           <ul class="nav flex-column mb-2">
             <div class="form-check nav-link">
-              <input class="form-check-input mx-0" type="checkbox" value="" id="age1">
-              <label class="form-check-label mx-2" for="age1">
+              <input class="form-check-input mx-0" type="checkbox" value="Street Names" id="streetNames" checked>
+              <label class="form-check-label mx-2" for="streetNames">
                 Street Names
               </label>
             </div>
             <div class="form-check nav-link">
-              <input class="form-check-input mx-0" type="checkbox" value="" id="age1">
-              <label class="form-check-label mx-2" for="age1">
+              <input class="form-check-input mx-0" type="checkbox" value="Pumps" id="pumps" checked>
+              <label class="form-check-label mx-2" for="pumps">
                 Pumps
               </label>
             </div>
             <div class="form-check nav-link">
-              <input class="form-check-input mx-0" type="checkbox" value="" id="age1">
-              <label class="form-check-label mx-2" for="age1">
+              <input class="form-check-input mx-0" type="checkbox" value="Buildings" id="buildings" checked>
+              <label class="form-check-label mx-2" for="buildings">
                 Buildings
               </label>
             </div>
@@ -169,7 +166,7 @@
               <div class=" border text-center shadow-sm" id="canvas" width="500" height="500"></div>
             </div>
             <div class="col">
-              <div class="my-4" id="day-bar-graph"></div>
+              <div class="mt-2" id="day-bar-graph" width="auto" height="450"></div>
             </div>
           </div>
         </div>
@@ -178,16 +175,22 @@
             <div class="col text-center">
               <div class="pt-4" id="pie-chart" ></div>
               <h2 class="h4 pt-1 ">Gender Breakdown</h2>
-              <!-- <div class="my-4 " id="day-bar-graph"></div> -->
             </div>
             <div class="col  text-center">
               <div class="pt-4" id="age-pie-chart" ></div>
-              <h2 class="h4 pt-1 ">Age Breakdown</h2>
+              <h2 class="h4 pt-1">Age Breakdown</h2>
             </div>
             <div class="col-6">
-              Slider goes here
+              <div class="mt-6">  
+                
+              </div>
+              <div class="mt-6">
+                <!-- HTML to write -->
+                <a href="#" data-toggle="tooltip" title="Some tooltip text!">Hover over me</a>
+
+
+              </div>
             </div>
-            
           </div>
         </div>
       </main>
@@ -195,14 +198,14 @@
   </div>
 
   <script src="./assets/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+  <script src="./assets/dist/js/dashboard.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="./assets/dist/js/script.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
     integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous">
   </script> -->
   <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
     integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script> -->
-  <script src="./assets/dist/js/dashboard.js"></script>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="./assets/dist/js/script.js"></script>
 </body>
 
 </html>
