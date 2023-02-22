@@ -1,5 +1,5 @@
 rect.bar:hover {
-    fill: orange;
+    fill: #EFAD15;
 }
 #cirles circle:hover {
     fill: greenyellow;
@@ -7,3 +7,4 @@ rect.bar:hover {
 #pumps circle:hover {
     fill: greenyellow;
 }
+

@@ -173,9 +173,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 return d.y * multiplier;
             })
             .attr("r", function (d) {
-                return radius * 2;
+                return radius * 3;
             })
-            .attr("fill", "red")
+            .attr("fill", "#EFAD15")
+            .attr("stroke","black")
+            .attr("stroke-width", 1)
             .append("title")
             .text(function (d) {
                 return "Pump";
@@ -211,11 +213,13 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .attr("fill", function (d) {
                 if (d.gender == 1) {
-                    return "pink";
+                    return "#ffa8d9";
                 } else {
-                    return "blue";
+                    return "#759eff";
                 }
             })
+            .attr("stroke","black")
+            .attr("stroke-width", .25)
             .attr("class", function (d) {
                 if (d.gender == 1) {
                     return "circle female";
@@ -231,17 +235,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function GetDeathDate(deathData) {
-        let localDeathData = deathData;
-        var deathCount = parseInt(localDeathData[0].deaths);
+        var deathCount = parseInt(deathData[0].deaths);
         var newCount;
         while (deathCount == 0) {
-            localDeathData.shift();
-            deathCount = parseInt(localDeathData[0].deaths);
+            deathData.shift();
+            deathCount = parseInt(deathData[0].deaths);
             dayCounter++;
         }
         if (deathCount > 0) {
             newCount = deathCount - 1;
-            localDeathData[0].deaths = newCount.toString();
+            deathData[0].deaths = newCount.toString();
             return dayCounter;
         }
     }
@@ -269,7 +272,8 @@ document.addEventListener('DOMContentLoaded', function () {
             pieRadius = Math.min(width, height) / 2,
             g = pieSvg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-        var color = d3.scaleOrdinal(['#0000FF', '#FFC0CB']);
+        var color = d3.scaleOrdinal(['#0000FF', '#ffa8d9']);
+        //var color = d3.scaleOrdinal(['#0000FF', '#ffa8d9']);
         var pie = d3.pie();
         var arc = d3.arc()
             .innerRadius(0)
@@ -283,18 +287,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
         arcs.append("path")
             .attr("fill", function (d, i) {
-                return color(i);
+                //return color(i);
+                if (d.index == 1) {
+                    return "#759eff";
+                } else {
+                    return "#ffa8d9";
+                }
             })
             .attr("d", arc);
+
         arcs.append("text")
+            .style("fill", "white")
             .attr("transform", function (d) {
                 return "translate(" + arc.centroid(d) + ")";
             })
             .text(function (d) {
+                //return  d.value;
                 if (d.index == 1) {
-                    return "Male - " + d.value;
+                    return "M - " + d.value;
                 } else {
-                    return "Female - " + d.value;
+                    return "F - " + d.value;
                 }
             });
     }
@@ -518,20 +530,73 @@ document.addEventListener('DOMContentLoaded', function () {
     function FilterCircles(selectedValues) {
         const circles = document.querySelectorAll('.circle');
         const dateValue = document.getElementById('date-slider').value;
+        const totalDeathElement  = document.getElementById('total-death-count');
+
+        var updatedGenderData = new Array(2).fill(0);
+        var updatedAgeData = {zero: 0, one: 0,two: 0,three: 0,four: 0,five: 0}
+        var updatedTotalDeathCount = 0;
 
         circles.forEach((circle) => {
             const age = circle.getAttribute('data-age');
             const gender = circle.getAttribute('data-gender');
             const deathDate = parseInt(circle.getAttribute('data-death'));
 
-
             if (selectedValues.includes(age) && selectedValues.includes(gender) && deathDate <= dateValue) {
                 circle.style.display = 'block';
+                // Capture counts to update pie charts
+                if (gender == "Male"){
+                    updatedGenderData[0]++;
+                } else {
+                    updatedGenderData[1]++;
+                }
+                switch (age) {
+                    case "0-10":
+                        updatedAgeData["zero"]++; // 
+                        break;
+                    case "11-20":
+                        updatedAgeData["one"]++; // >= 11 &&  <=20
+                        break;
+                    case "21-40":
+                        updatedAgeData["two"]++; // >= 21 && i.age <=40
+                        break;
+                    case "41-60":
+                        updatedAgeData["three"]++; // >= 41 && <=60
+                        break;
+                    case "61-80":
+                        updatedAgeData["four"]++; //  >= 61 &&  <=80
+                        break;
+                    case "> 80":
+                        updatedAgeData["five"]++; // > 80 
+                        break;
+                    default:
+                        break;
+                }
+                updatedTotalDeathCount++;
             } else {
                 circle.style.display = 'none';
             }
         });
 
+        totalDeathElement.textContent = updatedTotalDeathCount;
+        const genderPie = document.getElementById('pie-svg');
+        const agePie = document.getElementById('age-pie-svg');
+        genderPie.remove();
+        agePie.remove();
+        RefreshPieCharts(updatedGenderData, updatedAgeData)
     }
 
+    function RefreshPieCharts(updatedGenderData, updatedAgeData) {
+        if (updatedGenderData[0] > 0 || updatedGenderData[1] > 0) {
+            
+            RenderGenderPieChart(updatedGenderData);
+        }
+        if (x => (updatedAgeData.forEach(key => {
+            if (key.value > 0) {
+                return true;
+            }}))) {
+            
+            RenderAgePieChart(updatedAgeData); 
+        }
+        
+    }
 });
