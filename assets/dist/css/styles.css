@@ -1,10 +1,17 @@
 rect.bar:hover {
     fill: #EFAD15;
 }
-#cirles circle:hover {
-    fill: greenyellow;
+#cirles circle.male:hover {
+    fill: #ACC4FF;
+    stroke-width: .25;
+}
+
+#cirles circle.female:hover {
+    fill: #FFD3EC;
+    stroke-width: .25;
 }
 #pumps circle:hover {
-    fill: greenyellow;
+    fill: #F5CD72;
+    stroke-width: 1.25;
 }
 
