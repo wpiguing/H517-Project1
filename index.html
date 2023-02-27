@@ -50,28 +50,11 @@
     <div class="row">
       <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
         <div class="position-sticky pt-3 px-3">
-          <ul class="nav flex-column border-bottom pb-3">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/index.html">
-                <span data-feather="home"></span>
-                Home
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/about.html">
-                <span data-feather="info"></span>
-                About
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" target="_blank" href="#">
-                <span data-feather="youtube"></span>
-                Video Explanation
-              </a>
-            </li>
-          </ul>
-          <input type="range" class="form-range pt-6" min="1" max="42" step="1" id="date-slider" value="42">  
+          <p class="mb-0">Date Range Slider:</p>
+          <input type="range" class="pt-6" min="1" max="42" step="1" id="date-slider" value="42">  
+          <span style="display: inline-block;">Aug 19 - </span> 
           <label for="range" class="form-label" id="slider-label">42</label>
+          <p>Total Death Count: <span id="total-death-count">571</span></p>
           <h3 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-bold">
             <span>Filters</span>
           </h3>
@@ -82,13 +65,20 @@
             <div class="form-check nav-link">
               <input class="form-check-input mx-0" type="checkbox" value="Male" id="male" checked>
               <label class="form-check-label mx-2" for="male">
-                Male
+                Male 
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#759eff" class="bi bi-gender-male" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="50"  fill="#759eff" stroke="black" stroke-width="3"  style="display: block;"></circle>
+                </svg>
+                
               </label>
             </div>
             <div class="form-check nav-link">
               <input class="form-check-input mx-0" type="checkbox" value="Female" id="female" checked>
               <label class="form-check-label mx-2" for="female">
                 Female
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FFA8D9" class="bi bi-gender-male" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="50"  fill="#FFA8D9" stroke="black" stroke-width="3"  style="display: block;"></circle>
+                </svg>
               </label>
             </div>
           </ul>
@@ -138,15 +128,24 @@
           </h4>
           <ul class="nav flex-column mb-2">
             <div class="form-check nav-link">
-              <input class="form-check-input mx-0" type="checkbox" value="Street Names" id="streetNames" checked>
-              <label class="form-check-label mx-2" for="streetNames">
-                Street Names
+              <input class="form-check-input mx-0" type="checkbox" value="Grid" id="grid">
+              <label class="form-check-label mx-2" for="grid">
+                Grid
               </label>
             </div>
             <div class="form-check nav-link">
               <input class="form-check-input mx-0" type="checkbox" value="Pumps" id="pumps" checked>
               <label class="form-check-label mx-2" for="pumps">
                 Pumps
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gender-male" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="50"  fill="#EFAD15" stroke="black" stroke-width="3"  style="display: block;"></circle>
+                </svg>
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="Street Names" id="streetNames" checked>
+              <label class="form-check-label mx-2" for="streetNames">
+                Street Names
               </label>
             </div>
             <div class="form-check nav-link">
@@ -161,32 +160,26 @@
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
         <div class="mx-auto my-6 ">
           <div class="row">
-            <h1 class="h2 p-3 ">Map</h1>
-            <div class="col">
-              <div class=" border text-center shadow-sm" id="canvas" width="500" height="500"></div>
+            <h1 class="h2 p-3">Map</h1>
+            <div id="grid-tooltip" style="display: none;" class="text-center">
+              <p>Grid: <span id="grid-id">A1</span></p>
+              <p>Deaths: <span id="grid-deaths">0</span></p>
             </div>
             <div class="col">
-              <div class="mt-2" id="day-bar-graph" width="auto" height="450"></div>
+              <div  id="canvas"></div>
+              
+            </div>
+            <div class="col">
+              <div class="pt-4" id="pie-chart" ></div>
+              <h2 class="h4 pt-1 ">Gender Distribution</h2>
+              <div class="pt-4" id="age-pie-chart" ></div>
+              <h2 class="h4 pt-1">Age Distribution</h2>
             </div>
           </div>
         </div>
         <div class="mx-auto my-6 ">
           <div class="row">
-            <div class="col text-center">
-              <div class="pt-4" id="pie-chart" ></div>
-              <h2 class="h4 pt-1 ">Gender Distribution</h2>
-            </div>
-            <div class="col  text-center">
-              <div class="pt-4" id="age-pie-chart" ></div>
-              <h2 class="h4 pt-1">Age Distribution</h2>
-            </div>
-            <div class="col-6">
-              <div class="mt-6">  
-                <p>Total Death Count: <span id="total-death-count">571</span></p>
-              </div>
-              <div class="mt-6">
-                
-              </div>
+            <div class="mt-2" id="day-bar-graph"></div>
             </div>
           </div>
         </div>

@@ -1,22 +1,33 @@
 document.addEventListener('DOMContentLoaded', function () {
-    var w = 750;
-    var h = 500;
-    const multiplier = 25;
+    const w = 750;
+    const h = 750;
+    var multiplier = 30;
     const radius = 1.5;
+    var xAdjustment = 101;
+    var yAdjustment = 96;
+    var padding = 100;
 
     var deathData;
     var streetsData;
     var sliderData;
     var dasData; // Death, Age, Sex
+    var gridBounds = [];
     var genderPieData = [0, 0];
-    var agePieData = { zero: 0,  one: 0, two: 0, three: 0, four: 0, five: 0}
+    var agePieData = {
+        zero: 0,
+        one: 0,
+        two: 0,
+        three: 0,
+        four: 0,
+        five: 0
+    }
     var dayCounter = 1;
-
 
     // Parent SVG for all map elements
     let svg = d3.select("#canvas")
         .append("svg")
         .attr("id", "map-svg")
+        .attr("class", "border shadow-sm")
         .attr("width", w)
         .attr("height", h);
 
@@ -26,23 +37,21 @@ document.addEventListener('DOMContentLoaded', function () {
         .attr("id", "map-container")
 
     LoadAllData();
-    SetupZoom();
-    SetupFilters();
-
-
+ 
     async function LoadAllData() {
-        const streets = await d3.json("./data/streets.json").then(function(data) {
+        const streets = await d3.json("./data/streets.json").then(function (data) {
             streetsData = data;
         });
-        const deaths = await d3.csv("./data/deathdays.csv").then(function(data) {
+        const deaths = await d3.csv("./data/deathdays.csv").then(function (data) {
             deathData = data.slice();
             sliderData = data.slice();
             //deathData = data;
         });
-        const pumps = await d3.csv("./data/pumps.csv").then(function(data) {
+        const pumps = await d3.csv("./data/pumps.csv").then(function (data) {
             pumpData = data;
-        }); 
-        const das = await d3.csv("./data/deaths_age_sex.csv").then(function(data) {
+        });
+        // Death, Age, Sex data
+        const das = await d3.csv("./data/deaths_age_sex.csv").then(function (data) {
             dasData = data;
             data.forEach(i => {
                 switch (i.gender) {
@@ -83,30 +92,33 @@ document.addEventListener('DOMContentLoaded', function () {
         Promise.all([streets, deaths, pumps, das]).then((values) => {
             RenderPathStreets(streetsData);
             RenderDeathBarGraph(deathData);
+            SetupGrid(dasData);
             SetupSlider(sliderData);
             RenderPumps(pumpData);
             // Pass "massaged" data to render death circles, gender, and age charts and 
             RenderDeathCircles(dasData);
             RenderGenderPieChart(genderPieData);
             RenderAgePieChart(agePieData);
-            console.log("Data loaded"); 
-          });
+            console.log("Data loaded");
+            SetupZoom();
+            SetupFilters();
+            GridTooltipHover();
+        });
     }
 
     function SetupSlider(sliderData) {
-
         // Parse Date format
-        var dateFormat  = d3.timeFormat("%b %d");
-        var parseDate  = d3.timeParse("%-d-%b");
+        var dateFormat = d3.timeFormat("%b %d");
+        var parseDate = d3.timeParse("%-d-%b");
         const slider = document.getElementById('date-slider');
         const sliderLabel = document.getElementById('slider-label');
-        var value = slider.value -1;
+        var value = slider.value - 1;
         var date = sliderData[value].date;
         sliderLabel.textContent = dateFormat(date);
 
         slider.addEventListener('input', () => {
             slider.setAttribute('value', slider.value);
-            var value = slider.value -1;
+            var value = slider.value - 1;
             var date = sliderData[value].date;
             sliderLabel.textContent = dateFormat(date);
 
@@ -117,16 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
-
     function RenderPathStreets(data) {
-        var padding = 50;
-        var xScale = d3.scaleLinear()
-            .domain([0, w])
-            .range([0, w]);
-        var yScale = d3.scaleLinear()
-            .domain([0, h])
-            .range([0, h]);
-
         var streetsG = d3.select("#map-container")
             .append("g")
             .attr("id", "streets")
@@ -135,10 +138,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var lines = d3.line()
             .x(function (d) {
-                return xScale(d.x) * multiplier;
+                return d.x * multiplier ;
             })
             .y(function (d) {
-                return yScale(d.y) * multiplier;
+                return d.y * multiplier ;
             })
 
         streetsG.enter()
@@ -148,7 +151,71 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("stroke", "black")
             .attr("stroke-width", .5)
             .style("fill", "none");
+    }
 
+    function SetupGrid() {
+        var grid = 10;
+        var numRows = grid;
+        var numCols = grid;
+        var rectWidth = 50;
+        var rectHeight = 50;
+
+        var gridData = [];
+        var alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P"]
+        for (var row = 0; row < numRows; row++) {
+            for (var col = 0; col < numCols; col++) {
+                gridData.push({
+                    row: row,
+                    col: col,
+                    label: alphabet[col] + ( row + 1)
+                });
+                const x = col * rectWidth;
+                const y = row * rectHeight;
+                const bounds = [
+                    [alphabet[col] + (row+1)],
+                    // x lower and higher bounds
+                    // adjustment is to overlap grid over map
+                    [x + xAdjustment , x + rectWidth + xAdjustment],
+                    // y lower and higher bounds
+                    [y + yAdjustment, y + rectHeight + yAdjustment]
+                ];
+                gridBounds.push(bounds);
+            }
+            
+        }
+        var gridContainer = d3.select("#map-container")
+            .append("g")
+            .attr("id", "grid-container")
+            .style("display", "none");
+
+        var grids = gridContainer.selectAll("rect")
+            .data(gridData)
+            .enter()
+            .append("rect")
+            .attr("class", "grid")
+            .attr("id", function (d) {
+                return d.label;
+            })
+            .attr("x", function (d) {
+                return d.col * rectWidth + xAdjustment;
+            })
+            .attr("y", function (d) {
+                return d.row  * rectHeight + yAdjustment;
+            })
+            .attr("width", rectWidth)
+            .attr("height", rectHeight)
+            // .append("title")
+            //     .text(function (d) {
+            //         return d.label;
+            //     })
+            //     .attr("x", function (d) {
+            //         return d.col * rectWidth + xAdjustment;
+            //     })
+            //     .attr("y", function (d) {
+            //         return d.row  * rectHeight + yAdjustment;
+            //     })
+            //     .attr("text-anchor", "middle")
+            //     .attr("fill", "black");
     }
 
     function RenderPumps(data) {
@@ -171,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return radius * 3;
             })
             .attr("fill", "#EFAD15")
-            .attr("stroke","black")
+            .attr("stroke", "black")
             .attr("stroke-width", 1)
             .append("title")
             .text(function (d) {
@@ -179,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
     }
 
-    function RenderDeathCircles(data) {
+    function RenderDeathCircles(data) {           
         var g = d3.select("#map-container")
             .append("g")
             .attr("id", "cirles");
@@ -206,6 +273,9 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("data-death", function (d) {
                 return GetDeathDate(deathData);
             })
+            .attr("data-grid", function (d) {
+                return GetGridPosition(d);
+            })
             .attr("fill", function (d) {
                 if (d.gender == 1) {
                     return "#ffa8d9"; // pink
@@ -213,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     return "#759eff"; // blue
                 }
             })
-            .attr("stroke","black")
+            .attr("stroke", "black")
             .attr("stroke-width", .1)
             .attr("class", function (d) {
                 if (d.gender == 1) {
@@ -224,8 +294,27 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .append("title")
             .text(function (d) {
-                return "Age: " + GetRangeLabelJustValue(d.age) + ", Gender: " + GetGender(d.gender);
+                return "Age: " + GetRangeLabelJustValue(d.age) + ", Gender: " + GetGender(d.gender) + ", Grid: " + GetGridPosition(d);
             })
+
+    }
+
+    function GetGridPosition(d) {
+        var xScale = d3.scaleLinear()
+            .domain([0, w])
+            .range([0, w]);
+        var yScale = d3.scaleLinear()
+            .domain([0, h])
+            .range([0, h]);
+        var position = "";
+        var scaledDx = xScale(d.x) * multiplier;
+        var scaledDy = yScale(d.y) * multiplier;
+        gridBounds.map( rectBounds => {
+            if (scaledDx > rectBounds[1][0] && scaledDx < rectBounds[1][1] && scaledDy > rectBounds[2][0] && scaledDy < rectBounds[2][1]) {
+                position += rectBounds[0][0]
+            }
+        })
+        return position;
 
     }
 
@@ -250,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function () {
             default:
                 return;
         }
-        
+
     }
 
     function GetDeathDate(deathData) {
@@ -277,8 +366,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function RenderGenderPieChart(pieData) {
-        w = 200;
-        h = 200;
+        const w = 200;
+        const h = 200;
         let pieSvg = d3.select("#pie-chart")
             .append("svg")
             .attr("id", "pie-svg")
@@ -310,7 +399,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // hardcoded array position for m and f
                 if (i === 1) {
                     return "#ffa8d9"; // pink
-                 
+
                 } else if (i === 0) {
                     return "#759eff"; // blue
                 }
@@ -335,8 +424,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function RenderAgePieChart(agePieData) {
-        w = 200;
-        h = 200;
+        const w = 200;
+        const h = 200;
         let agePieSvg = d3.select("#age-pie-chart")
             .append("svg")
             .attr("id", "age-pie-svg")
@@ -377,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function GetRangeLabel(value, index, agePieData) {
         if (agePieData != undefined) {
-            var range =  Object.keys(agePieData)[index];
+            var range = Object.keys(agePieData)[index];
         }
         switch (range) {
             case "zero":
@@ -386,45 +475,45 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     break;
                 }
-            case "one":
-                if (value > 0) {
-                    return "11-20";
-                } else {
-                    break;
-                }
-            case "two":
-                if (value > 0) {
-                    return "21-40";
-                } else {
-                    break;
-                }
-            case "three":
-                if (value > 0) {
-                    return "41-60";
-                } else {
-                    break;
-                }
-            case "four":
-                if (value > 0) {
-                    return "61-80";
-                } else {
-                    break;
-                }
-            case "five":
-                if (value > 0) {
-                    return "> 80";
-                } else {
-                    break;
-                }
-            default:
-                return;
+                case "one":
+                    if (value > 0) {
+                        return "11-20";
+                    } else {
+                        break;
+                    }
+                case "two":
+                    if (value > 0) {
+                        return "21-40";
+                    } else {
+                        break;
+                    }
+                case "three":
+                    if (value > 0) {
+                        return "41-60";
+                    } else {
+                        break;
+                    }
+                case "four":
+                    if (value > 0) {
+                        return "61-80";
+                    } else {
+                        break;
+                    }
+                case "five":
+                    if (value > 0) {
+                        return "> 80";
+                    } else {
+                        break;
+                    }
+                    default:
+                        return;
         }
-        
+
     }
 
     function RenderDeathBarGraph(data) {
-        w = 700;
-        h = 400;
+        const w = 700;
+        const h = 400;
         var padding = 50;
 
         // Parse Date format
@@ -539,10 +628,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     //Zoom
-    function SetupZoom(params) {
-        // Handle Zoom Event 
+    function SetupZoom() {
         var zoom = d3.zoom()
-            .scaleExtent([1, 10])
+            .scaleExtent([1, 15])
             .on("zoom", handleZoom);
 
         function handleZoom(e) {
@@ -551,6 +639,43 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         d3.select("#map-svg")
             .call(zoom);
+    }
+
+    function GridTooltipHover() {
+        var grids = document.querySelectorAll('.grid');
+        var gridTooltip = document.getElementById('grid-tooltip');
+		var gridDeaths = document.getElementById('grid-deaths');
+        var gridIdLabel = document.getElementById('grid-id');
+        var tooltipDeathCount = 0;
+		grids.forEach(grid => {
+			grid.addEventListener('mouseover', () => {
+                var circles =  document.querySelectorAll(`[data-grid=${grid.id}]`);
+                circles.forEach(circle => {
+                    if (circle.style.display == "block") {
+                        circle.style.strokeWidth = .75;
+                        tooltipDeathCount++
+                    }
+                })
+				gridDeaths.innerHTML = tooltipDeathCount;
+                gridIdLabel.innerHTML = grid.id;
+				gridTooltip.style.display = "block";
+			});
+
+			grid.addEventListener('mouseout', () => {
+                var circles =  document.querySelectorAll(".circle");
+                circles.forEach(circle => {
+                    circle.style.strokeWidth = .25;
+                })
+				gridTooltip.style.display = "none";
+                tooltipDeathCount = 0;
+			});
+
+			grid.addEventListener('mousemove', (event) => {
+				gridTooltip.style.left = event.pageX + 20 + "px";
+				gridTooltip.style.top = event.pageY + 20 + "px";
+			});
+		});
+     
     }
 
     //Filters
@@ -562,28 +687,37 @@ document.addEventListener('DOMContentLoaded', function () {
                 const selectedCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
                 const selectedValues = Array.from(selectedCheckboxes).map((checkbox) => checkbox.value);
                 FilterCircles(selectedValues);
+                Toggles(selectedValues);
             });
         });
     }
 
+    //Apply filter selections to all circles
     function FilterCircles(selectedValues) {
         const circles = document.querySelectorAll('.circle');
         const dateValue = document.getElementById('date-slider').value;
-        const totalDeathElement  = document.getElementById('total-death-count');
+        const totalDeathElement = document.getElementById('total-death-count');
 
         var updatedGenderData = [0, 0];
-        var updatedAgeData = {zero: 0, one: 0,two: 0,three: 0,four: 0,five: 0}
+        var updatedAgeData = {
+            zero: 0,
+            one: 0,
+            two: 0,
+            three: 0,
+            four: 0,
+            five: 0
+        }
         var updatedTotalDeathCount = 0;
-
         circles.forEach((circle) => {
             const age = circle.getAttribute('data-age');
             const gender = circle.getAttribute('data-gender');
             const deathDate = parseInt(circle.getAttribute('data-death'));
 
             if (selectedValues.includes(age) && selectedValues.includes(gender) && deathDate <= dateValue) {
+                circle.style.opacity = '1';
                 circle.style.display = 'block';
                 // Capture counts to update pie charts
-                if (gender == "Female"){
+                if (gender == "Female") {
                     updatedGenderData[1]++;
                 } else {
                     updatedGenderData[0]++;
@@ -612,6 +746,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 updatedTotalDeathCount++;
             } else {
+                circle.style.opacity = '0';
                 circle.style.display = 'none';
             }
         });
@@ -620,28 +755,46 @@ document.addEventListener('DOMContentLoaded', function () {
         RefreshPieCharts(updatedGenderData, updatedAgeData)
     }
 
+    function Toggles(selectedValues) {
+        const gridElement = document.getElementById('grid-container');
+        const pumpElements = document.querySelectorAll('.pump');
+
+        if (selectedValues.includes("Grid")) {
+            gridElement.style.display = 'block';
+        } else {
+            gridElement.style.display = 'none';
+        }
+
+        if (selectedValues.includes("Pumps")) {
+            pumpElements.forEach((pump) => {
+                pump.style.opacity = 1;
+                pump.style.display = 'block';
+            })
+        } else {
+            pumpElements.forEach((pump) => {
+                pump.style.opacity = 0;
+                pump.style.display = 'none';
+            })
+        }
+    }
+
     function RefreshPieCharts(updatedGenderData, updatedAgeData) {
         const genderPie = document.getElementById('pie-svg');
         genderPie.remove();
         RenderGenderPieChart(updatedGenderData);
-        // if (updatedGenderData[0] > 0 || updatedGenderData[1] > 0) {
-        //     RenderGenderPieChart(updatedGenderData);
-        // } else {
-        //     updatedGenderData = [0,0]
-        //     RenderGenderPieChart(updatedGenderData);
-        // }
         const agePie = document.getElementById('age-pie-svg');
         agePie.remove();
         if (x => (updatedAgeData.forEach(key => {
                 if (key.value > 0) {
                     return true;
-                } 
+                }
             }))) {
-            RenderAgePieChart(updatedAgeData); 
+            RenderAgePieChart(updatedAgeData);
         } else {
-            updatedAgeData = [ 0, 0, 0, 0, 0, 0]
-            RenderAgePieChart(updatedAgeData); 
+            updatedAgeData = [0, 0, 0, 0, 0, 0]
+            RenderAgePieChart(updatedAgeData);
         }
-        
     }
+
+    
 });

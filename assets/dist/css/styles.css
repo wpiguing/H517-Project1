@@ -1,17 +1,71 @@
+/* g#streets, g#pumps, g#cirles {
+    transform: rotate(-1.1deg);
+} */
+
 rect.bar:hover {
     fill: #EFAD15;
 }
+
+#cirles circle, #pumps circle {
+    transition: .5s;
+}
+
+#grid-container {
+    position: absolute;
+}
+
+#grid-container .grid {
+    fill: transparent;
+    stroke: #000000;
+    stroke-width: 0.1;
+}
+
+#grid-container .grid:hover {
+    fill: rgba(192,192,192,0.3);
+    stroke-width: 1;
+}
+
+
 #cirles circle.male:hover {
     fill: #ACC4FF;
-    stroke-width: .25;
+    stroke-width: .75;
 }
 
 #cirles circle.female:hover {
     fill: #FFD3EC;
-    stroke-width: .25;
+    stroke-width: .75;
 }
+
 #pumps circle:hover {
     fill: #F5CD72;
     stroke-width: 1.25;
 }
 
+input[type="range"] {
+    width: 100%;
+}
+
+#grid-tooltip {
+    position: absolute;
+    width: 150px;
+    height: auto;
+    padding: 10px;
+    background-color: white;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+   }
+   #grid-tooltip.hidden {
+    display: none;
+   }
+   #grid-tooltip p {
+    margin: 0;
+    font-family: sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+   }
+   
