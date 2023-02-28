@@ -7,14 +7,14 @@
   <meta name="description" content="">
   <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
   <meta name="generator" content="Hugo 0.84.0">
-  <title>About</title>
+  <title>London's 1854 Cholera Epidemic</title>
 
   <link rel="canonical" href="/index.html">
 
 
 
   <!-- Bootstrap core CSS -->
-  <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="./assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
     .bd-placeholder-img {
@@ -31,85 +31,355 @@
       }
     }
   </style>
-
-
-  <!-- Custom styles for this template -->
-  <link href="../assets/dist/css/dashboard.css" rel="stylesheet">
+  <link href="./assets/dist/css/styles.css" rel="stylesheet">
+  <link href="./assets/dist/css/dashboard.css" rel="stylesheet">
 </head>
 
 <body>
-
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Project 1</a>
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">London's 1854 Cholera Epidemic</a>
     <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
       data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    
-    <div class="navbar-nav">
-      <div class="nav-item me-0 px-3">
-        <p class="text-light mb-0">H517 Visualization Design, Analysis,
-          & Evaluation</p>
-
+    <div class="d-flex justify-content-end">
+      <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+          <a class="nav-link px-3" href="./index.html">Map</a>
+        </div>
+      </div>
+      <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+          <a class="nav-link px-3" href="./about.html">About</a>
+        </div>
+      </div>
+      <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+          <a class="nav-link px-3" href="#">Documentation</a>
+        </div>
       </div>
     </div>
-  </header>
 
+  </header>
   <div class="container-fluid">
     <div class="row">
-      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" style="overflow: auto;">
         <div class="position-sticky pt-3 px-3">
-          <ul class="nav flex-column pb-3">
-            <li class="nav-item">
-              <a class="nav-link " aria-current="page" href="/index.html">
-                <span data-feather="home"></span>
-                Home
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="/about.html">
-                <span data-feather="info"></span>
-                About
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" target="_blank" href="#">
-                <span data-feather="youtube"></span>
-                Video Explanation
-              </a>
-            </li>
-            
+          <div class="form-check nav-link">
+            <input class="form-check-input mx-0" type="checkbox" value="Grid" id="grid">
+            <label class="form-check-label mx-2" for="grid">
+              Toggle Grid
+            </label>
+          </div>
+          <h3 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-bold">
+            <span>Filters</span>
+          </h3>
+          <h4 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Gender</span>
+          </h4>
+          <ul class="nav flex-column mb-2">
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="Male" id="male" checked>
+              <label class="form-check-label mx-2" for="male">
+                Male
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#759eff" class="bi bi-gender-male"
+                  viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="50" fill="#759eff" stroke="black" stroke-width="3" style="display: block;">
+                  </circle>
+                </svg>
+
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="Female" id="female" checked>
+              <label class="form-check-label mx-2" for="female">
+                Female
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FFA8D9" class="bi bi-gender-male"
+                  viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="50" fill="#FFA8D9" stroke="black" stroke-width="3" style="display: block;">
+                  </circle>
+                </svg>
+              </label>
+            </div>
           </ul>
-
-
+          <h4 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Age Range</span>
+          </h4>
+          <ul class="nav flex-column mb-2">
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="0" id="age0" checked>
+              <label class="form-check-label mx-2" for="age0">
+                0-10
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="1" id="age1" checked>
+              <label class="form-check-label mx-2" for="age1">
+                11-20
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="2" id="age2" checked>
+              <label class="form-check-label mx-2" for="age2">
+                21-40
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="3" id="age3" checked>
+              <label class="form-check-label mx-2" for="age3">
+                41-60
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="4" id="age4" checked>
+              <label class="form-check-label mx-2" for="age4">
+                61-80
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="5" id="age5" checked>
+              <label class="form-check-label mx-2" for="age5">
+                > 80
+              </label>
+            </div>
+          </ul>
+          <h4 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Map Legends</span>
+          </h4>
+          <ul class="nav flex-column mb-2">
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="Pumps" id="pumps" checked>
+              <label class="form-check-label mx-2" for="pumps">
+                Pumps
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-gender-male" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="50" fill="#EFAD15" stroke="black" stroke-width="3" style="display: block;">
+                  </circle>
+                </svg>
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="Street Names" id="streetNames" checked>
+              <label class="form-check-label mx-2" for="streetNames">
+                Street Names
+              </label>
+            </div>
+            <div class="form-check nav-link">
+              <input class="form-check-input mx-0" type="checkbox" value="Buildings" id="buildings" checked>
+              <label class="form-check-label mx-2" for="buildings">
+                Buildings
+              </label>
+            </div>
+          </ul>
         </div>
       </nav>
-
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-          <h1 class="h2">About</h1>
-          
+        <div class="mx-auto my-6 ">
+          <div class="row">
+            <h1 class="h2 p-3">Map</h1>
+            <div id="grid-tooltip" style="display: none;" class="text-center">
+              <p>Grid: <span id="grid-id">A1</span></p>
+              <p>Deaths: <span id="grid-deaths">0</span></p>
+            </div>
+            <div class="col pb-5">
+              <div id="canvas"></div>
+            </div>
+            <div class="col pb-5">
+              <div class="row">
+                <div class="d-flex justify-content-center">
+                  <div class="card p-3 shadow-lg border-0 mb-4" style="max-width: 540px; min-width: 540px;">
+                    <div class="row no-gutters border-bottom">
+                      <div class="col-12 ">
+                        <h2 class="mb-2 h5">Adjust Date Range:</h2>
+                        <input type="range" class="pt-6" min="1" max="42" step="1" id="date-slider" value="42">
+                        <span style="display: inline-block;">Aug 19 - </span>
+                        <label for="range" class="form-label" id="slider-label">42</label>
+                      </div>
+                      
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <div class="card-body p-2">
+                          <p class="card-text">Total Death Count: </p>
+                          <strong><span id="total-death-count">571</span></strong>
+                          
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="card-body p-2">
+                          <p class="card-text">Days Elapsed:</p>
+                          <strong><span id="days-elapsed">42</span></strong>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="card-body p-2">
+                          <p class="card-text">Avg. deaths per day:</p>
+                          <strong><span id="avg-deaths">13.60</span></strong>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="d-flex justify-content-center">
+                  <div class="card p-3 shadow-lg border-0 mb-4" style="max-width: 540px; min-width: 540px;">
+                    <div class="row no-gutters">
+                      <div class="col-md-6 text-center">
+                        <div id="pie-chart"></div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="card-body p-2">
+                          <h3 class="card-title h5">Gender Distribution</h3>
+                          <p class="card-text mb-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#759eff" 
+                                viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="50" fill="#759eff" stroke="black" stroke-width="3" style="display: block;">
+                                </circle>
+                              </svg> Male
+                              
+                          </p>
+                          <p class="card-text mb-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FFA8D9" 
+                            viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="50" fill="#FFA8D9" stroke="black" stroke-width="3" style="display: block;">
+                            </circle>
+                          </svg> Female
+                              
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="d-flex justify-content-center">
+                  <div class="card p-3 shadow-lg border-0 mb-4" style="max-width: 540px; min-width: 540px;">
+                    <div class="row no-gutters">
+                      <div class="col-md-6 text-center">
+                        <div id="age-pie-chart"></div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="card-body p-2">
+                          <h3 class="card-title h5">Age Distribution</h3>
+                          <p class="card-text mb-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#EE6352"  class="mr-2"
+                            viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="50" fill="#EE6352" stroke="black" stroke-width="3" style="display: block;">
+                            </circle>
+                          </svg> 0 - 10 
+                          </p>
+                          <p class="card-text mb-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#59CD90" 
+                                viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="50" fill="#59CD90" stroke="black" stroke-width="3" style="display: block;">
+                                </circle>
+                              </svg> 11 - 20
+                          </p>
+                          <p class="card-text mb-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#BC5090" 
+                                viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="50" fill="#BC5090" stroke="black" stroke-width="3" style="display: block;">
+                                </circle>
+                              </svg> 21 - 40
+                              
+                          </p>
+                          <p class="card-text mb-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#3FA7D6" 
+                                viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="50" fill="#3FA7D6" stroke="black" stroke-width="3" style="display: block;">
+                                </circle>
+                              </svg> 41 - 60
+                              
+                          </p>
+                          <p class="card-text mb-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#FAC05E" 
+                                viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="50" fill="#FAC05E" stroke="black" stroke-width="3" style="display: block;">
+                                </circle>
+                              </svg> 61 - 80
+                              
+                          </p>
+                          <p class="card-text mb-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#D8D4F2" 
+                                viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="50" fill="#D8D4F2" stroke="black" stroke-width="3" style="display: block;">
+                                </circle>
+                              </svg>
+                             > 80
+                              
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <div>
-          <p>This project's purpose was to recreate a digital visualization of Dr. John Snow's famous map of London's 1854 cholera epidemic.</p>
+        <div class="mx-auto my-6 ">
+          <div class="row">
+            <h1 class="h2 p-3">Deaths Per Day</h1>
+            <div class="col pb-5">
+              <div class="mt-2" id="day-bar-graph"></div>
+            </div>
+            <div class="col pb-5">
+              <div class="row">
+                <div class="d-flex justify-content-center">
+                  <div class="card p-3 shadow-lg border-0 mb-4" style="max-width: 540px; min-width: 540px;">
+                    <div class="row no-gutters border-bottom">
+                      <div class="col-12 ">
+                        <h2 class="mb-2 h5">Adjust Date Range:</h2>
+                        <input type="range" class="pt-6" min="1" max="42" step="1" id="bargraph-slider" value="42">
+                        <span style="display: inline-block;">Aug 19 - </span>
+                        <label for="bargraph-slider" class="form-label" id="bargraph-slider">42</label>
+                      </div>
+                      
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <div class="card-body p-2">
+                          <p class="card-text">Total Death Count: </p>
+                          <strong><span id="idk">571</span></strong>
+                          
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="card-body p-2">
+                          <p class="card-text">Days Elapsed:</p>
+                          <strong><span id="idk2">42</span></strong>
+                        </div>
+                      </div>
+                      <div class="col">
+                        <div class="card-body p-2">
+                          <p class="card-text">Avg. deaths per day:</p>
+                          <strong><span id="idk3">13.60</span></strong>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
         </div>
-
-
-
-      </main>
     </div>
+    </main>
+  </div>
   </div>
 
-  <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./assets/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./assets/dist/js/dashboard.js"></script>
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+  <script src="./assets/dist/js/script.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
     integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous">
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
-    integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
-  <script src="../assets/dist/js/dashboard.js"></script>
-  <!-- <script src="../assets/dist/js/script.js"></script> -->
+  </script> -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
+    integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script> -->
 </body>
 
 </html>

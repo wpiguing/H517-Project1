@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .append('path')
             .attr("d", lines)
             .attr("class", "street")
-            .attr("stroke", "black")
+            .attr("stroke", "#212529")
             .attr("stroke-width", .5)
             .style("fill", "none");
     }
@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return radius * 3;
             })
             .attr("fill", "#EFAD15")
-            .attr("stroke", "black")
+            .attr("stroke", "#212529")
             .attr("stroke-width", 1)
             .append("title")
             .text(function (d) {
@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     return "#759eff"; // blue
                 }
             })
-            .attr("stroke", "black")
+            .attr("stroke", "#212529")
             .attr("stroke-width", .1)
             .attr("class", function (d) {
                 if (d.gender == 1) {
@@ -366,8 +366,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function RenderGenderPieChart(pieData) {
-        const w = 200;
-        const h = 200;
+        const w = 225;
+        const h = 225;
         let pieSvg = d3.select("#pie-chart")
             .append("svg")
             .attr("id", "pie-svg")
@@ -416,16 +416,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 //     return  d.value;
                 // }
                 if (d.value > 0 && i == 1) {
-                    return "F - " + d.value;
+                    return d.value;
                 } else if (d.value > 0 && i == 0) {
-                    return "M - " + d.value;
+                    return d.value;
                 }
             });
     }
 
     function RenderAgePieChart(agePieData) {
-        const w = 200;
-        const h = 200;
+        const w = 225;
+        const h = 225;
         let agePieSvg = d3.select("#age-pie-chart")
             .append("svg")
             .attr("id", "age-pie-svg")
@@ -460,7 +460,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 return "translate(" + arc.centroid(d) + ")";
             })
             .text(function (d, i) {
-                return GetRangeLabel(d.value, i, agePieData);
+                if (d.value > 0) {
+                    return d.value;
+                }
+                // return GetRangeLabel(d.value, i, agePieData);
             });
     }
 
@@ -475,38 +478,38 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     break;
                 }
-                case "one":
-                    if (value > 0) {
-                        return "11-20";
-                    } else {
-                        break;
-                    }
-                case "two":
-                    if (value > 0) {
-                        return "21-40";
-                    } else {
-                        break;
-                    }
-                case "three":
-                    if (value > 0) {
-                        return "41-60";
-                    } else {
-                        break;
-                    }
-                case "four":
-                    if (value > 0) {
-                        return "61-80";
-                    } else {
-                        break;
-                    }
-                case "five":
-                    if (value > 0) {
-                        return "> 80";
-                    } else {
-                        break;
-                    }
-                    default:
-                        return;
+            case "one":
+                if (value > 0) {
+                    return "11-20";
+                } else {
+                    break;
+                }
+            case "two":
+                if (value > 0) {
+                    return "21-40";
+                } else {
+                    break;
+                }
+            case "three":
+                if (value > 0) {
+                    return "41-60";
+                } else {
+                    break;
+                }
+            case "four":
+                if (value > 0) {
+                    return "61-80";
+                } else {
+                    break;
+                }
+            case "five":
+                if (value > 0) {
+                    return "> 80";
+                } else {
+                    break;
+                }
+                default:
+                    return;
         }
 
     }
@@ -607,7 +610,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("y", 50)
             .attr("x", w / 2)
             .attr("text-anchor", "end")
-            .attr("fill", "black")
+            .attr("fill", "#212529")
             .text("Dates")
             .attr("font-size", "12px")
 
@@ -623,7 +626,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("x", h / -2)
             .attr("dy", "-4em")
             .attr("text-anchor", "end")
-            .attr("fill", "black")
+            .attr("fill", "#212529")
             .text("Deaths");
     }
 
@@ -697,6 +700,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const circles = document.querySelectorAll('.circle');
         const dateValue = document.getElementById('date-slider').value;
         const totalDeathElement = document.getElementById('total-death-count');
+        const daysElapsed = document.getElementById('days-elapsed');
+        const avgDeaths = document.getElementById('avg-deaths');
 
         var updatedGenderData = [0, 0];
         var updatedAgeData = {
@@ -750,8 +755,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 circle.style.display = 'none';
             }
         });
-        // Update Death Counter
+        // Update Counters
         totalDeathElement.textContent = updatedTotalDeathCount;
+        daysElapsed.textContent = dateValue ;
+        avgDeaths.textContent = (updatedTotalDeathCount / (dateValue)).toFixed(2);
         RefreshPieCharts(updatedGenderData, updatedAgeData)
     }
 
