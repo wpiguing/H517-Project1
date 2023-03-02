@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const w = 750;
-    const h = 750;
+    const w = 700;
+    const h = 700;
     var multiplier = 30;
     const radius = 1.5;
     var xAdjustment = 101;
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let svg = d3.select("#canvas")
         .append("svg")
         .attr("id", "map-svg")
-        .attr("class", "border shadow-sm")
+        .attr("class", "shadow-lg")
         .attr("width", w)
         .attr("height", h);
 
@@ -103,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
             SetupZoom();
             SetupFilters();
             GridTooltipHover();
+            BarGraphClickEvent();
         });
     }
 
@@ -564,6 +565,10 @@ document.addEventListener('DOMContentLoaded', function () {
             .enter()
             .append("rect")
             .attr("class", "bar")
+            .attr("data-val", function(d,i ){
+                return i + 1;
+            })
+            .style("cursor", "pointer")
             .attr("fill", function (d) {
                 return color(d.deaths);
             })
@@ -679,6 +684,20 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
 		});
      
+    }
+
+    function BarGraphClickEvent() {
+        const rects = document.querySelectorAll('rect.bar');
+        const dateSlider = document.getElementById('date-slider');
+
+        rects.forEach(rect => {
+        rect.addEventListener('click', () => {
+            const day = parseInt(rect.getAttribute('data-val'));
+            dateSlider.value = day;
+            const event = new Event('input');
+            dateSlider.dispatchEvent(event);
+        });
+});
     }
 
     //Filters
