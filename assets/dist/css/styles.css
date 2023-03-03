@@ -19,6 +19,11 @@
     stroke-width: 1;
 }
 
+.age-arc:hover {
+    stroke: black;
+    stroke-width: 1;
+}
+
 #pumps, #circles {
     cursor: pointer ;
 }
