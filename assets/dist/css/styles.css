@@ -1,9 +1,22 @@
 /* g#streets, g#pumps, g#cirles {
     transform: rotate(-1.1deg);
 } */
+  
+#brewery {
+    font-size: 8px;
+}
+
+#grid-tooltip, #pie-tooltip, #age-tooltip {
+    z-index: 1000;
+}
 
 #canvas {
     cursor: zoom-in;
+}
+
+.gender-arc:hover {
+    stroke: black;
+    stroke-width: 1;
 }
 
 #pumps, #circles {
@@ -59,7 +72,7 @@ input[type="range"] {
     width: 100%;
 }
 
-#grid-tooltip {
+#grid-tooltip, #pie-tooltip, #age-tooltip {
     position: absolute;
     width: 150px;
     height: auto;
@@ -73,10 +86,10 @@ input[type="range"] {
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
     pointer-events: none;
    }
-#grid-tooltip.hidden {
+#grid-tooltip.hidden, #pie-tooltip.hidden, #age-tooltip.hidden {
     display: none;
 }
-#grid-tooltip p {
+#grid-tooltip p, #pie-tooltip p, #age-tooltip p {
     margin: 0;
     font-family: sans-serif;
     font-size: 16px;

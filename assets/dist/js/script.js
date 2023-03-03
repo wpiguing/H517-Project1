@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var deathData;
     var streetsData;
+    var buildingsData;
+    var streetNamesData;
     var sliderData;
     var dasData; // Death, Age, Sex
     var gridBounds = [];
@@ -41,6 +43,12 @@ document.addEventListener('DOMContentLoaded', function () {
     async function LoadAllData() {
         const streets = await d3.json("./data/streets.json").then(function (data) {
             streetsData = data;
+        });
+        const buildings = await d3.json("./data/buildings.json").then(function (data) {
+            buildingsData = data;
+        });
+        const streetNames = await d3.json("./data/street-names.json").then(function (data) {
+            streetNamesData = data;
         });
         const deaths = await d3.csv("./data/deathdays.csv").then(function (data) {
             deathData = data.slice();
@@ -89,12 +97,16 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        Promise.all([streets, deaths, pumps, das]).then((values) => {
+        Promise.all([streets, buildings, streetNames, deaths, pumps, das]).then((values) => {
             RenderPathStreets(streetsData);
             RenderDeathBarGraph(deathData);
-            SetupGrid(dasData);
+            
             SetupSlider(sliderData);
+            
+            RenderBuildings(buildingsData);
+            RenderStreetNames(streetNamesData);
             RenderPumps(pumpData);
+            SetupGrid();
             // Pass "massaged" data to render death circles, gender, and age charts and 
             RenderDeathCircles(dasData);
             RenderGenderPieChart(genderPieData);
@@ -104,6 +116,8 @@ document.addEventListener('DOMContentLoaded', function () {
             SetupFilters();
             GridTooltipHover();
             BarGraphClickEvent();
+            GenderPeiChartHover();
+            AgePeiChartHover();
         });
     }
 
@@ -152,6 +166,70 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("stroke", "#212529")
             .attr("stroke-width", .5)
             .style("fill", "none");
+    }
+
+    function RenderBuildings(data) {
+        var g = d3.select("#map-container")
+            .append("g")
+            .attr("id", "buildings-container");
+        var buildings = g.selectAll("g")
+            .data(data)
+            .enter()
+            .append("g")
+            .attr("transform", function (d) {
+                return d.rotate;
+            });
+
+
+
+        buildings.append("text")
+        .attr("class", "buildings")
+            .text(function (d) {
+                return d.name;
+            })
+            .attr("x", function (d) {
+                return d.x;
+            })
+            .attr("y", function (d) {
+                return d.y ;
+            })
+            .attr("fill", "#c0c0c0")
+            .attr("font-size", function (d) {
+                return d.size ;
+            })
+    }
+
+    function RenderStreetNames(data) {
+        var g = d3.select("#map-container")
+            .append("g")
+            .attr("id", "streets-container");
+        var buildings = g.selectAll("g")
+            .data(data)
+            .enter()
+            .append("g")
+            .attr("transform", function (d) {
+                return d.rotate;
+            });
+
+
+        buildings.append("text")
+        .attr("class", "street-names")
+            .text(function (d) {
+                return d.name;
+            })
+            .attr("x", function (d) {
+                return d.x;
+            })
+            .attr("y", function (d) {
+                return d.y ;
+            })
+            .attr("fill", "#c0c0c0")
+            .attr("font-size", function (d) {
+                return d.size ;
+            })
+            .attr("letter-spacing", function (d) {
+                return d.space ;
+            })
     }
 
     function SetupGrid() {
@@ -392,7 +470,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .data(pie(pieData))
             .enter()
             .append("g")
-            .attr("class", "arc")
+            .attr("class", "gender-arc")
 
         arcs.append("path")
             .attr("fill", function (d, i) {
@@ -408,14 +486,21 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("d", arc);
 
         arcs.append("text")
+            .attr("id", function (d,i) {
+                if (i == 1) {
+                    return "female-value";
+                }  {
+                    return "male-value";
+                }
+            })
+            .attr("class", function (d) {
+                return "gender-value"
+            })
             .style("fill", "white")
             .attr("transform", function (d) {
                 return "translate(" + arc.centroid(d) + ")";
             })
             .text(function (d, i) {
-                // if (d.value> 0 ) {
-                //     return  d.value;
-                // }
                 if (d.value > 0 && i == 1) {
                     return d.value;
                 } else if (d.value > 0 && i == 0) {
@@ -449,7 +534,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .data(pie(Object.values(agePieData)))
             .enter()
             .append("g")
-            .attr("class", "arc")
+            .attr("class", "age-arc")
 
         arcs.append("path")
             .attr("fill", function (d, i) {
@@ -457,6 +542,12 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .attr("d", arc);
         arcs.append("text")
+            .attr("id", function (d,i) {
+                return "pie-age-" + i;
+            })
+            .attr("class", function (d) {
+                return "age-range"
+            })
             .attr("transform", function (d) {
                 return "translate(" + arc.centroid(d) + ")";
             })
@@ -467,7 +558,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // return GetRangeLabel(d.value, i, agePieData);
             });
     }
-
+    // Not used
     function GetRangeLabel(value, index, agePieData) {
         if (agePieData != undefined) {
             var range = Object.keys(agePieData)[index];
@@ -686,6 +777,82 @@ document.addEventListener('DOMContentLoaded', function () {
      
     }
 
+    function GenderPeiChartHover() {
+        var arcs = document.querySelectorAll('.gender-arc');
+        var pieTooltip = document.getElementById('pie-tooltip');
+		var percentageTooltip = document.getElementById('percentage-value');
+        //var gridIdLabel = document.getElementById('grid-id');
+        var percentage = 0;
+        
+		arcs.forEach(arc => {
+			arc.addEventListener('mouseover', () => {
+                var thisVal = arc.querySelector('.gender-value').innerHTML;
+                var maleVal = document.getElementById('male-value').innerHTML;
+                var femaleVal = document.getElementById('female-value').innerHTML;
+                maleVal = +maleVal;
+                femaleVal = +femaleVal;
+                percentage = thisVal / (maleVal + femaleVal);
+
+				percentageTooltip.innerHTML = (percentage * 100).toFixed(2);
+                pieTooltip.style.display = "block";
+			});
+
+			arc.addEventListener('mouseout', () => {
+				pieTooltip.style.display = "none";
+                percentage = 0;
+			});
+
+			arc.addEventListener('mousemove', (event) => {
+				pieTooltip.style.left = event.pageX - 150 + "px";
+				pieTooltip.style.top = event.pageY + 20 + "px";
+			});
+		});
+     
+    }
+
+    function AgePeiChartHover() {
+        var arcs = document.querySelectorAll('.age-arc');
+        var ageTooltip = document.getElementById('age-tooltip');
+		var agePercentage = document.getElementById('age-percentage');
+        //var gridIdLabel = document.getElementById('grid-id');
+        var percentage = 0;
+        
+		arcs.forEach(arc => {
+			arc.addEventListener('mouseover', () => {
+                var thisVal = arc.querySelector('.age-range').innerHTML;
+                var zeroVal = document.getElementById('pie-age-0').innerHTML;
+                var oneVal = document.getElementById('pie-age-1').innerHTML;
+                var twoVal = document.getElementById('pie-age-2').innerHTML;
+                var threeVal = document.getElementById('pie-age-3').innerHTML;
+                var fourVal = document.getElementById('pie-age-4').innerHTML;
+                var fiveVal = document.getElementById('pie-age-5').innerHTML;
+                zeroVal = +zeroVal;
+                oneVal = +oneVal;
+                twoVal = +twoVal;
+                threeVal = +threeVal;
+                fourVal = +fourVal;
+                fiveVal = +fiveVal;
+
+
+                percentage = thisVal / (zeroVal + oneVal + twoVal + threeVal + fourVal + fiveVal);
+
+				agePercentage.innerHTML = (percentage * 100).toFixed(2);
+                ageTooltip.style.display = "block";
+			});
+
+			arc.addEventListener('mouseout', () => {
+				ageTooltip.style.display = "none";
+                percentage = 0;
+			});
+
+			arc.addEventListener('mousemove', (event) => {
+				ageTooltip.style.left = event.pageX - 150 + "px";
+				ageTooltip.style.top = event.pageY + 20 + "px";
+			});
+		});
+     
+    }
+
     function BarGraphClickEvent() {
         const rects = document.querySelectorAll('rect.bar');
         const dateSlider = document.getElementById('date-slider');
@@ -696,6 +863,8 @@ document.addEventListener('DOMContentLoaded', function () {
             dateSlider.value = day;
             const event = new Event('input');
             dateSlider.dispatchEvent(event);
+
+
         });
 });
     }
@@ -784,6 +953,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function Toggles(selectedValues) {
         const gridElement = document.getElementById('grid-container');
         const pumpElements = document.querySelectorAll('.pump');
+        const buildingsElements = document.querySelectorAll('.buildings');
+        const streenNameElements = document.querySelectorAll('.street-names');
 
         if (selectedValues.includes("Grid")) {
             gridElement.style.display = 'block';
@@ -793,13 +964,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (selectedValues.includes("Pumps")) {
             pumpElements.forEach((pump) => {
-                pump.style.opacity = 1;
                 pump.style.display = 'block';
             })
         } else {
             pumpElements.forEach((pump) => {
-                pump.style.opacity = 0;
                 pump.style.display = 'none';
+            })
+        }
+        if (selectedValues.includes("Buildings")) {
+            buildingsElements.forEach((building) => {
+                building.style.display = 'block';
+            })
+        } else {
+            buildingsElements.forEach((building) => {
+                building.style.display = 'none';
+            })
+        }
+        if (selectedValues.includes("Street Names")) {
+            streenNameElements.forEach((building) => {
+                building.style.display = 'block';
+            })
+        } else {
+            streenNameElements.forEach((building) => {
+                building.style.display = 'none';
             })
         }
     }
@@ -808,6 +995,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const genderPie = document.getElementById('pie-svg');
         genderPie.remove();
         RenderGenderPieChart(updatedGenderData);
+        GenderPeiChartHover();
         const agePie = document.getElementById('age-pie-svg');
         agePie.remove();
         if (x => (updatedAgeData.forEach(key => {
@@ -816,9 +1004,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }))) {
             RenderAgePieChart(updatedAgeData);
+            AgePeiChartHover();
         } else {
             updatedAgeData = [0, 0, 0, 0, 0, 0]
             RenderAgePieChart(updatedAgeData);
+            AgePeiChartHover();
         }
     }
 

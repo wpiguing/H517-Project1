@@ -1,15 +1,59 @@
 [
     {
-        "name": "",
-        "x": 16.7380009,
-        "y": 18.6959991
+        "name": "Work",
+        "id" : "work",
+        "x": 320,
+        "y": 380,
+        "rotate" : "rotate(24 310 405)",
+        "size" : "10px"
     },
     {
-        "x": 16.7380009,
-        "y": 18.6959991
+        "name": "House",
+        "id" : "house",
+        "x": 320,
+        "y": 400,
+        "rotate" : "rotate(24 330 400)",
+        "size" : "10px"
     },
     {
-        "x": 16.7380009,
-        "y": 18.6959991
+        "name": "Brewery",
+        "id" : "brewery",
+        "x": 400,
+        "y": 350,
+        "rotate" : "rotate(-65 420 350)",
+        "size" : "8px"
+    },
+    {
+        "name": "Soho",
+        "id" : "soho",
+        "x": 530,
+        "y": 470,
+        "rotate" : "rotate(24 530 475)",
+        "size" : "10px"
+    },
+    {
+        "name": "Square",
+        "id" : "square",
+        "x": 530,
+        "y": 480,
+        "rotate" : "rotate(24 530 465)",
+        "size" : "10px"
+    }
+    ,
+    {
+        "name": "Golden",
+        "id" : "golden",
+        "x": 341,
+        "y": 250,
+        "rotate" : "rotate(37 366 255)",
+        "size" : "8px"
+    },
+    {
+        "name": "Square",
+        "id" : "square",
+        "x": 341,
+        "y": 250,
+        "rotate" : "rotate(37 350 250)",
+        "size" : "8px"
     }
 ]
