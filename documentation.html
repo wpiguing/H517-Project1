@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Hugo 0.84.0">
+  <title>Documentation - London's 1854 Cholera Epidemic</title>
+  <link rel="icon" type="image/png" sizes="16x16" href="https://www.wpiguing.dev/dist/images/logo.svg"/>
+  <link rel="canonical" href="/index.html">
+
+
+
+  <!-- Bootstrap core CSS -->
+  <link href="./assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+  </style>
+  <link href="./assets/dist/css/styles.css" rel="stylesheet">
+  <link href="./assets/dist/css/dashboard.css" rel="stylesheet">
+</head>
+
+<body>
+  <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">London's 1854 Cholera Epidemic</a>
+    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+      data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="d-flex justify-content-end">
+      <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+          <a class="nav-link px-3" href="./index.html">Map</a>
+        </div>
+      </div>
+      <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+          <a class="nav-link active px-3" href="./documentation.html">Documentation</a>
+        </div>
+      </div>
+      <div class="navbar-nav">
+        <div class="nav-item text-nowrap">
+          <a class="nav-link px-3" href="#">Video Overview</a>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="container">
+    <h1 class="mt-5">Project Documentation</h1>
+    <h2 class="mt-5">First things first</h2>
+    <p class="lead">
+      Before I can start creating an ideal layout for the visualizations, I would have to learn D3 first. My plan was to familiarize myself with it as quickly as possible and push the design phase to a later time when I was more accustomed to the library. 
+      The best way to do this was to just start and try to get example 
+      charts on an HTML page. I had a number of resources available to me such as the lectures, the book <i>Interactive Data Visualization for the Web</i>, and other supplementary online resources such as <a target="_blank" href="https://github.com/d3/d3/wiki">D3's official Github documentation</a> 
+      and <a target="_blank" href="https://www.d3indepth.com/introduction/">D3 in Depth</a>. All of these resources combined would allow me to get a basic understanding of the D3's capabilities.   
+    </p>
+    <h2 class="mt-5">Data</h2>
+    <p class="lead">
+      Once I got some working knowledge with D3, I started off the project by getting familiar with the data sets, and what relationships can be drawn from the different files. 
+      The <code>streets.json</code> and <code>pumps.csv</code> data were straightforward as they are just coordinates, but <code>deathdays.csv</code>
+      and <code>deaths_age_sex.csv</code> were a bit more complex. Regardless, the data sources were all loaded in using the appropriate D3 methods. Also, later on in the process, additional coordinate data sources were created for street labels and building names. 
+ 
+    </p>
+    
+    <h2 class="mt-5">Layout</h2>
+    <p class="lead">
+      I started the layout design process by determining the project requirements. There was a need for multiple visualizations, but the interactive map was the main component. It also had to be dynamic,
+       via filtering and various user inputs. Hence, there was a need for form components such as checkboxes and range sliders. To quickly produce an HTML page to contain the visualizations and and iterate through mock-ups, I used the front-end web framework
+       <a target="_blank" href="https://getbootstrap.com/">Bootstrap</a>. After going through a few versions, I decided on a simple dashboard page with a sidebar that contains the form controls. The main part of the page will contain the visualizations
+       and the user will be able to scroll down if needed. Early in the process, I wasn't sure how the SVGs would scale and how much room I would need, so left as much space on the main part of the page as possible.
+    </p>
+    <h2 class="mt-5">Visualizations</h2>
+    <p class="lead">
+      The project required a few different visualizations that D3 would be used to render:
+    </p>
+
+    <ul class="fs-5 text fw-light">
+      <li>
+        The interactive map would be a combination of streets drawn using <code>paths</code>, the death indicators and pumps using <code>circles</code>, and the aforementioned street labels and building names using <code>text</code>.
+      </li>
+      <li>
+        Pie charts for representing the sex and age distribution of the data.
+      </li>
+      <li>
+        Lastly, a bar graph to visualize deaths per day. 
+      </li>
+    </ul>
+    <p class="lead">  
+      Please refer to the <a target="_blank" href="./assets/dist/js/script.js">script file</a>  to see the respective render functions used for each visual.</p>
+
+    <div class="container">
+      <div class="row align-items-center g-lg-5 py-5">
+        <div class="col-md-8 text-center text-lg-start">
+          <h3 class="mb-3 fs-5 text">Interactive Map</h3>
+          <p class=" lead">Laying out the map was a straight forward process. One of the most important things to remember was to use 
+            the same multiplier when it came to scaling the map unto a larger canvas area. I played around with a few values and found one that 
+            fits a good portion of the screen on desktop. I also gave it enough padding to account for interactivity such as dragging and zoom. 
+            </p> 
+            <p class=" lead">
+              Furthermore, deciding on the color indicators for sex was also straight forward. Blue and pink are the most commonly associated 
+            colors to the two respective sexes, and so I wanted to keep it simple. The pumps are just larger scaled circles, and I used an orange color to associate it with danger.
+            Added on are a few of the major street names and buildings in close proximity to the outbreak. Coordinate positioning for each label was manually calculated with the help
+            of a copy of the <a target="_blank" href="https://en.wikipedia.org/wiki/1854_Broad_Street_cholera_outbreak">original map</a>. 
+            </p>
+          </div>
+        <div class="col-md-10  col-lg-4">
+          <img src="./assets/dist/map.PNG" alt="interactive map" class="img-fluid img-thumbnail">
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row align-items-center g-lg-5 py-5">
+        <div class="col-md-10  col-lg-4">
+          <img src="./assets/dist/pie.PNG" alt="pie charts" class="img-fluid img-thumbnail">
+          
+            
+          </div>
+        <div class="col-md-8 text-center text-lg-start  ">
+          <h3 class="mb-3 fs-5 text">Pie Charts</h3>
+          <p class=" lead">
+            Starting with the Sex Distribution chart, I brought over the same colors I had used on the map to maintain consistency. Viewers would be able to easily associate the number
+            with either sex strictly based on the color even if the legends weren't there.
+           </p> 
+           <p class=" lead">
+            For the Age Distribution chart, it was a bit more tricky. I knew I needed a wide range of colors with enough contrast for viewers to easily differentiate between the
+            more compressed pie slices. The legends table was also more necessary as packing them inside with the number labels would've caused poor readability. 
+            I also explored the possibility of a bar chart in place of a pie chart, but opted against it since I wanted to save the bar chart for the Deaths per Day graph. 
+            In hindsight, this may have been the better option. 
+           </p> 
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row align-items-center g-lg-5 py-5">
+        <div class="col-md-7 text-center text-lg-start">
+          <h3 class="mb-3 fs-5 text">Deaths per Day Bar Graph</h3>
+          <p class=" lead">This bar graph was, for the lack of a better word, cumbersome to render. The issue stemmed from the number of days that would have to be rendered.
+            I debated numerous times whether I should leave out each individual day ticker and opt for a incremented approach. I also had to think about which axis the days should go on.
+            On top of all those things, there was a wide range for the number of deaths. Ensuring values on both extreme ends were accurately depicted was a main focus. 
+            I also decided to use a color gradient based on red to depict death. 
+            
+          </p> 
+            
+          </div>
+        <div class="col-md-10  col-lg-5">
+          <img src="./assets/dist/bar.PNG" alt="bar graph" class="img-fluid img-thumbnail">
+        </div>
+      </div>
+    </div>
+
+    <h2 class="mt-5">Interactivity</h2>
+    <p class="lead">
+      Looking at the project requirements, the following functionalities were needed: zoom, drag, filtering by various categories, a date range slider, and a grid. From a programming standpoint, I opted not to rely on D3's built-in filtering abilities,
+       and instead used custom vanilla Javascript functions that I wrote. Once the data was loaded in, the map and graphs were still drawn using native D3 functions. From that point on, custom event listeners for all the appropriate SVG elements
+        would produce different effects such as toggling visibility, grid positioning, counting deaths, and showing tooltips on hover.
+    </p>
+
+    <div class="container pb-5">
+      <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+        <div class="col d-flex align-items-start mb-4">
+          <div class="text-center">
+            <h3 class="text-lg-start mb-3 fs-5 text">Zoom</h3>
+            <p class="text-lg-start">
+              Zoom was implemented using a D3 module called <a target="_blank" href="https://github.com/d3/d3-zoom">d3.zoom</a>. It gives the user
+              the ability to take a closer look at the map data and enhances input precision. This works great with both the grid tools and the tooltips 
+              that activate on hover.
+            </p>
+            <img src="./assets/dist/zoom.PNG" alt="bar graph" class="img-fluid img-thumbnail">
+          </div>
+        </div>
+        <div class="col d-flex align-items-start mb-4">
+          <div class="text-center">
+            <h3 class="text-lg-start mb-3 fs-5 text">Grid Tool</h3>
+            <p class="text-lg-start">
+              The grid tool is a toggleable interactive feature that allows that user take a closer look at any specific grid. 
+              Once toggled on, the user can hover over any part of the map and a tooltip will provide additional information such as death
+              counts local to that grid along with the grids position. 
+            </p>
+            <img src="./assets/dist/grid.PNG" alt="bar graph" class="img-fluid img-thumbnail">
+          </div>
+        </div>
+        <div class="col d-flex align-items-start mb-4">
+          <div class="text-center">
+            <h3 class="text-lg-start mb-3 fs-5 text">Tooltips On Hover</h3>
+            <p class="text-lg-start">
+              Tooltips are a quick way of providing additional information on hover without adding more visual clutter. The pie charts, death and pump circles, and bar graph have this.
+              Although styled differently, most of the tooltips contain data specific to the element being hovered over. As shown below users can learn a lot about a person's sex, age range, and grid.
+            </p>
+            <img src="./assets/dist/hover2.PNG" alt="bar graph" class="img-fluid img-thumbnail mb-3">
+            <img src="./assets/dist/hover.PNG" alt="bar graph" class="img-fluid img-thumbnail ">
+          </div>
+        </div>
+        
+       
+        <div class="col d-flex align-items-start mb-4">
+          <div class="text-center">
+            <h3 class="text-lg-start mb-3 fs-5 text">Filters</h3>
+            <p class="text-lg-start">Checkboxes provide a quick way to filter through the data based on several categories such as sex and age range.
+              The filters are useful for reducing visual clutter and making the deaths marked on the map easier to identify. Ultimately, it gives the user 
+              a lot of control over what they want to see. 
+            </p>
+            <img src="./assets/dist/filter.PNG" alt="bar graph" class="img-fluid img-thumbnail ">
+          </div>
+        </div>
+
+        <div class="col d-flex align-items-start mb-4">
+          <div class="text-center">
+            <h3 class="text-lg-start mb-3 fs-5 text">Date Range Slider</h3>
+            <p class="text-lg-start">
+              The slider provides a way to create a range up to the selected date. It works in tandem with the filters and only applies to 
+              those categories currently checked. It also provides additional information such as total death count, time elapsed, an average deaths per day.
+            </p>
+            <img src="./assets/dist/range.PNG" alt="bar graph" class="img-fluid img-thumbnail ">
+          </div>
+        </div>
+        <div class="col d-flex align-items-start mb-4">
+          <div>
+            <h3 class="mb-3 fs-5 text">Click Events</h3>
+            <p class="text-lg-start">
+              A click event is present for each of the bars on the deaths per day bar graph. When a specific bar is clicked, it essentially acts a range selector, and alters the map data
+              up to that date/bar selected. The pie charts and all other counters get updated as well. Make sure to scroll back up to see the changes.
+            </p>
+            <img src="./assets/dist/bar.PNG" alt="bar graph" class="img-fluid img-thumbnail ">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="mt-5">Github</h2>
+    <p class="lead pb-5">
+      This project is hosted in <a target="_blank" href="https://wpiguing.github.io/H517-Project1/">GitHub Pages</a>, and the source code can be also be found in <a target="_blank" href="https://github.com/wpiguing/H517-Project1">GitHub</a>. 
+    </p>
+  </div>
+  </div>
+
+  <script src="./assets/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./assets/dist/js/dashboard.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="./assets/dist/js/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
+    integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
+    integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
+</body>
+
+</html>
