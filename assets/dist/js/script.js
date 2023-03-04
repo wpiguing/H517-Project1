@@ -373,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .append("title")
             .text(function (d) {
-                return "Age: " + GetRangeLabelJustValue(d.age) + ", Gender: " + GetGender(d.gender) + ", Grid: " + GetGridPosition(d);
+                return "Age: " + GetRangeLabelJustValue(d.age) + ", Sex: " + GetGender(d.gender) + ", Grid: " + GetGridPosition(d);
             })
 
     }
